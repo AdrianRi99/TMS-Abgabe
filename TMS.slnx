@@ -1,0 +1,21 @@
+<Solution>
+  <Folder Name="/src/" />
+  <Folder Name="/src/Api/">
+    <Project Path="src/Api/TMS.Api.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/" />
+  <Folder Name="/src/Modules/Addresses/" />
+  <Folder Name="/src/Modules/Addresses/Application/">
+    <Project Path="src/Modules/Addresses/Application/TMS.Addresses.Application.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Addresses/Domain/">
+    <Project Path="src/Modules/Addresses/Domain/TMS.Addresses.Domain.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Addresses/Infrastructure/">
+    <Project Path="src/Modules/Addresses/Infrastructure/TMS.Addresses.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/" />
+  <Folder Name="/tests/Addresses/">
+    <Project Path="tests/Addresses/TMS.Addresses.Tests.csproj" />
+  </Folder>
+</Solution>

@@ -1,0 +1,11 @@
+C:\Users\adrie\OneDrive\Dokumente\SoftwareEntwicklung\VisualStudioCode\.NET\Projekte\TMS\src\Modules\Addresses\Domain\bin\Debug\net10.0\TMS.Addresses.Domain.deps.json
+C:\Users\adrie\OneDrive\Dokumente\SoftwareEntwicklung\VisualStudioCode\.NET\Projekte\TMS\src\Modules\Addresses\Domain\bin\Debug\net10.0\TMS.Addresses.Domain.dll
+C:\Users\adrie\OneDrive\Dokumente\SoftwareEntwicklung\VisualStudioCode\.NET\Projekte\TMS\src\Modules\Addresses\Domain\bin\Debug\net10.0\TMS.Addresses.Domain.pdb
+C:\Users\adrie\OneDrive\Dokumente\SoftwareEntwicklung\VisualStudioCode\.NET\Projekte\TMS\src\Modules\Addresses\Domain\obj\Debug\net10.0\TMS.Addresses.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\adrie\OneDrive\Dokumente\SoftwareEntwicklung\VisualStudioCode\.NET\Projekte\TMS\src\Modules\Addresses\Domain\obj\Debug\net10.0\TMS.Addresses.Domain.AssemblyInfoInputs.cache
+C:\Users\adrie\OneDrive\Dokumente\SoftwareEntwicklung\VisualStudioCode\.NET\Projekte\TMS\src\Modules\Addresses\Domain\obj\Debug\net10.0\TMS.Addresses.Domain.AssemblyInfo.cs
+C:\Users\adrie\OneDrive\Dokumente\SoftwareEntwicklung\VisualStudioCode\.NET\Projekte\TMS\src\Modules\Addresses\Domain\obj\Debug\net10.0\TMS.Addresses.Domain.csproj.CoreCompileInputs.cache
+C:\Users\adrie\OneDrive\Dokumente\SoftwareEntwicklung\VisualStudioCode\.NET\Projekte\TMS\src\Modules\Addresses\Domain\obj\Debug\net10.0\TMS.Addresses.Domain.dll
+C:\Users\adrie\OneDrive\Dokumente\SoftwareEntwicklung\VisualStudioCode\.NET\Projekte\TMS\src\Modules\Addresses\Domain\obj\Debug\net10.0\refint\TMS.Addresses.Domain.dll
+C:\Users\adrie\OneDrive\Dokumente\SoftwareEntwicklung\VisualStudioCode\.NET\Projekte\TMS\src\Modules\Addresses\Domain\obj\Debug\net10.0\TMS.Addresses.Domain.pdb
+C:\Users\adrie\OneDrive\Dokumente\SoftwareEntwicklung\VisualStudioCode\.NET\Projekte\TMS\src\Modules\Addresses\Domain\obj\Debug\net10.0\ref\TMS.Addresses.Domain.dll
