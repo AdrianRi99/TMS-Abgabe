@@ -487,3 +487,16 @@ tms-frontend/dist/
 
 # Docker volumes
 pgdata/
+
+# Angular
+tms-frontend/.angular/
+tms-frontend/dist/
+
+# Docker volumes
+pgdata/
+
+# Explizit für alle Unterordner
+**/bin/
+**/obj/
+**/.vs/
+**/TestResults/
