@@ -16,6 +16,7 @@ public class CountriesController : ControllerBase
     }
 
     [HttpGet]
+    [EndpointName("getCountries")]
     public async Task<ActionResult<IReadOnlyList<CountryDto>>> GetAll(CancellationToken ct)
     {
         var result = await _handlers.GetAllAsync(ct);

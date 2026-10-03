@@ -30,12 +30,14 @@ public class CityRepository : ICityRepository
             .FirstOrDefaultAsync(c => c.Id == id, ct);
     }
 
-    public async Task<City?> FindAsync(string name, string zipCode, CancellationToken ct = default)
+    public async Task<City?> FindAsync(
+    string name, string zipCode, int countryId, CancellationToken ct = default)
     {
-        return await _context.Cities
-            .FirstOrDefaultAsync(c =>
-                c.Name.ToLower() == name.ToLower() &&
-                c.ZipCode == zipCode, ct);
+        var lowered = name.ToLower();
+        return await _context.Cities.FirstOrDefaultAsync(c =>
+            c.CountryId == countryId &&
+            c.ZipCode == zipCode &&
+            c.Name.ToLower() == lowered, ct);
     }
 
     public async Task AddAsync(City city, CancellationToken ct = default)

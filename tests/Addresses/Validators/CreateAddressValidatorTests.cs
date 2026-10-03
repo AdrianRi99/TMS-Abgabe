@@ -8,61 +8,33 @@ public class CreateAddressValidatorTests
 {
     private readonly CreateAddressValidator _validator = new();
 
-    [Fact]
-    public void Validate_WithValidRequest_ShouldNotHaveErrors()
+    private static CreateAddressRequest ValidRequest() =>
+        new("Hauptstraße", "12", null, "Wien", "1010", "Österreich");
+
+    public static TheoryData<CreateAddressRequest, string> InvalidRequests => new()
     {
-        var request = new CreateAddressRequest("Hauptstraße", "12", null, 1);
+        { ValidRequest() with { Street = "  " }, nameof(CreateAddressRequest.Street) },
+        { ValidRequest() with { HouseNumber = "" }, nameof(CreateAddressRequest.HouseNumber) },
+        { ValidRequest() with { Supplement = new string('x', 101) }, nameof(CreateAddressRequest.Supplement) },
+        { ValidRequest() with { CityName = "" }, nameof(CreateAddressRequest.CityName) },
+        { ValidRequest() with { ZipCode = new string('1', 21) }, nameof(CreateAddressRequest.ZipCode) },
+        { ValidRequest() with { CountryName = "" }, nameof(CreateAddressRequest.CountryName) },
+    };
 
-        var result = _validator.Validate(request);
-
-        result.IsValid.Should().BeTrue();
+    [Fact]
+    public void Validate_WithValidRequest_HasNoErrors()
+    {
+        _validator.Validate(ValidRequest()).IsValid.Should().BeTrue();
     }
 
     [Theory]
-    [InlineData("")]
-    [InlineData("   ")]
-    public void Validate_WithEmptyStreet_ShouldHaveError(string street)
+    [MemberData(nameof(InvalidRequests))]
+    public void Validate_WithInvalidRequest_ReportsErrorForProperty(
+        CreateAddressRequest request, string property)
     {
-        var request = new CreateAddressRequest(street, "12", null, 1);
-
         var result = _validator.Validate(request);
 
         result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(e => e.PropertyName == "Street");
-    }
-
-    [Theory]
-    [InlineData("")]
-    [InlineData("   ")]
-    public void Validate_WithEmptyHouseNumber_ShouldHaveError(string houseNumber)
-    {
-        var request = new CreateAddressRequest("Hauptstraße", houseNumber, null, 1);
-
-        var result = _validator.Validate(request);
-
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(e => e.PropertyName == "HouseNumber");
-    }
-
-    [Fact]
-    public void Validate_WithInvalidCityId_ShouldHaveError()
-    {
-        var request = new CreateAddressRequest("Hauptstraße", "12", null, 0);
-
-        var result = _validator.Validate(request);
-
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(e => e.PropertyName == "CityId");
-    }
-
-    [Fact]
-    public void Validate_WithSupplementTooLong_ShouldHaveError()
-    {
-        var request = new CreateAddressRequest("Hauptstraße", "12", new string('x', 101), 1);
-
-        var result = _validator.Validate(request);
-
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(e => e.PropertyName == "Supplement");
+        result.Errors.Should().Contain(e => e.PropertyName == property);
     }
 }

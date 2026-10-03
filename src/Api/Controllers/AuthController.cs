@@ -18,6 +18,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("register")]
+    [EndpointName("register")]
     public async Task<ActionResult<AuthResponse>> Register(RegisterRequest request)
     {
         var result = await _auth.RegisterAsync(request);
@@ -31,6 +32,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
+    [EndpointName("login")]
     public async Task<ActionResult<AuthResponse>> Login(LoginRequest request)
     {
         var result = await _auth.LoginAsync(request);

@@ -78,35 +78,22 @@ public class AddressHandlers
     }
 
     private async Task<int> ResolveOrCreateCityAsync(
-        string cityName,
-        string zipCode,
-        string countryName,
-        CancellationToken ct)
+    string cityName, string zipCode, string countryName, CancellationToken ct)
     {
-        var existing = await _cities.FindAsync(cityName, zipCode, ct);
-        if (existing is not null) return existing.Id;
-
         var country = await _countries.FindByNameAsync(countryName, ct);
         if (country is null)
         {
-            country = new Country(countryName, countryName[..Math.Min(3, countryName.Length)].ToUpper());
+            country = new Country(countryName);
             await _countries.AddAsync(country, ct);
         }
 
-        var city = new City(cityName, zipCode, country.Id);
+        var city = await _cities.FindAsync(cityName, zipCode, country.Id, ct);
+        if (city is not null) return city.Id;
+
+        city = new City(cityName, zipCode, country.Id);
         await _cities.AddAsync(city, ct);
         return city.Id;
     }
 
-    public async Task<IReadOnlyList<string>> GetStreetSuggestionsAsync(
-    string term, CancellationToken ct = default) =>
-    await _addresses.GetStreetSuggestionsAsync(term, ct);
 
-    public async Task<IReadOnlyList<string>> GetCitySuggestionsAsync(
-        string term, CancellationToken ct = default) =>
-        await _addresses.GetCitySuggestionsAsync(term, ct);
-
-    public async Task<IReadOnlyList<string>> GetCountrySuggestionsAsync(
-        string term, CancellationToken ct = default) =>
-        await _addresses.GetCountrySuggestionsAsync(term, ct);
 }

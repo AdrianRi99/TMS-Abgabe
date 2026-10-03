@@ -16,6 +16,7 @@ public class CitiesController : ControllerBase
     }
 
     [HttpGet]
+    [EndpointName("getCities")]
     public async Task<ActionResult<IReadOnlyList<CityDto>>> GetAll(CancellationToken ct)
     {
         var result = await _handlers.GetAllAsync(ct);

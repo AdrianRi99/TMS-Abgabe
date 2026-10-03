@@ -65,7 +65,10 @@ public class AddressRepository : IAddressRepository
 
     public async Task UpdateAsync(Address address, CancellationToken ct = default)
     {
-        _context.Addresses.Update(address);
+        var tracked = await _context.Addresses.FindAsync([address.Id], ct)
+            ?? throw new InvalidOperationException($"Address {address.Id} not found.");
+
+        _context.Entry(tracked).CurrentValues.SetValues(address);
         await _context.SaveChangesAsync(ct);
     }
 
@@ -78,59 +81,4 @@ public class AddressRepository : IAddressRepository
         await _context.SaveChangesAsync(ct);
     }
 
-
-    public async Task<IReadOnlyList<string>> GetStreetSuggestionsAsync(
-     string term, CancellationToken ct = default)
-    {
-        var query = _context.Addresses.AsNoTracking();
-
-        if (!string.IsNullOrWhiteSpace(term))
-            query = query.Where(a => EF.Functions.ILike(a.Street, $"%{term}%"));
-
-        return await query
-            .Select(a => a.Street)
-            .Distinct()
-            .OrderBy(s => s)
-            .Take(50)
-            .ToListAsync(ct);
-    }
-
-    public async Task<IReadOnlyList<string>> GetCitySuggestionsAsync(
-        string term, CancellationToken ct = default)
-    {
-        var query = _context.Addresses
-            .AsNoTracking()
-            .Include(a => a.City)
-            .AsQueryable();
-
-        if (!string.IsNullOrWhiteSpace(term))
-            query = query.Where(a => EF.Functions.ILike(a.City.Name, $"%{term}%"));
-
-        return await query
-            .Select(a => a.City.Name)
-            .Distinct()
-            .OrderBy(s => s)
-            .Take(50)
-            .ToListAsync(ct);
-    }
-
-    public async Task<IReadOnlyList<string>> GetCountrySuggestionsAsync(
-        string term, CancellationToken ct = default)
-    {
-        var query = _context.Addresses
-            .AsNoTracking()
-            .Include(a => a.City)
-            .ThenInclude(c => c.Country)
-            .AsQueryable();
-
-        if (!string.IsNullOrWhiteSpace(term))
-            query = query.Where(a => EF.Functions.ILike(a.City.Country.Name, $"%{term}%"));
-
-        return await query
-            .Select(a => a.City.Country.Name)
-            .Distinct()
-            .OrderBy(s => s)
-            .Take(50)
-            .ToListAsync(ct);
-    }
 }

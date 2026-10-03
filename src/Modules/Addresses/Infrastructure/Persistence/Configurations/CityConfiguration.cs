@@ -25,6 +25,6 @@ public class CityConfiguration : IEntityTypeConfiguration<City>
             .HasForeignKey(c => c.CountryId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasIndex(c => new { c.ZipCode, c.CountryId });
+        builder.HasIndex(c => new { c.Name, c.ZipCode, c.CountryId }).IsUnique();
     }
 }
