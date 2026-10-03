@@ -5,5 +5,7 @@ public record AddressSearchRequest(
     string? CityName = null,
     string? CountryName = null,
     int Page = 1,
-    int PageSize = 20
+    int PageSize = 20,
+    string SortBy = "street",
+    string SortDirection = "asc"
 );

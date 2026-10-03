@@ -25,17 +25,13 @@ public class AddressesController : ControllerBase
         return result is null ? NotFound() : Ok(result);
     }
 
+
     [HttpGet]
     [EndpointName("searchAddresses")]
     public async Task<ActionResult<PagedResult<AddressDto>>> Search(
-        [FromQuery] string? street,
-        [FromQuery] string? cityName,
-        [FromQuery] string? countryName,
-        [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 20,
-        CancellationToken ct = default)
+     [FromQuery] AddressSearchRequest request,
+     CancellationToken ct)
     {
-        var request = new AddressSearchRequest(street, cityName, countryName, page, pageSize);
         var result = await _handlers.SearchAsync(request, ct);
         return Ok(result);
     }

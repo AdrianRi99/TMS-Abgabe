@@ -28,6 +28,8 @@ public class AddressRepository : IAddressRepository
     string? countryName,
     int page,
     int pageSize,
+    string sortBy,
+    string sortDirection,
     CancellationToken ct = default)
     {
         var query = _context.Addresses
@@ -47,9 +49,28 @@ public class AddressRepository : IAddressRepository
 
         var totalCount = await query.CountAsync(ct);
 
+        var desc = sortDirection.Equals("desc", StringComparison.OrdinalIgnoreCase);
+
+        query = sortBy.ToLowerInvariant() switch
+        {
+            "housenumber" => desc
+                ? query.OrderByDescending(a => a.HouseNumber)
+                : query.OrderBy(a => a.HouseNumber),
+            "city" => desc
+                ? query.OrderByDescending(a => a.City.Name).ThenByDescending(a => a.Street)
+                : query.OrderBy(a => a.City.Name).ThenBy(a => a.Street),
+            "country" => desc
+                ? query.OrderByDescending(a => a.City.Country.Name).ThenByDescending(a => a.Street)
+                : query.OrderBy(a => a.City.Country.Name).ThenBy(a => a.Street),
+            "zipcode" => desc
+                ? query.OrderByDescending(a => a.City.ZipCode)
+                : query.OrderBy(a => a.City.ZipCode),
+            _ => desc
+                ? query.OrderByDescending(a => a.Street).ThenByDescending(a => a.HouseNumber)
+                : query.OrderBy(a => a.Street).ThenBy(a => a.HouseNumber)
+        };
+
         var items = await query
-            .OrderBy(a => a.Street)
-            .ThenBy(a => a.HouseNumber)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync(ct);

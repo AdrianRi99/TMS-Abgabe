@@ -14,6 +14,7 @@ using TMS.Identity.Infrastructure;
 using TMS.Identity.Infrastructure.Authentication;
 using TMS.Identity.Infrastructure.Persistence;
 using TMS.Api.OpenApi;
+using Scalar.AspNetCore;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -71,6 +72,7 @@ app.UseExceptionHandler();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.MapScalarApiReference();
 }
 
 app.UseCors();

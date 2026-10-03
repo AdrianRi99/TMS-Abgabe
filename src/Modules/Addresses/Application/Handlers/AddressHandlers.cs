@@ -29,15 +29,17 @@ public class AddressHandlers
     }
 
     public async Task<PagedResult<AddressDto>> SearchAsync(
-        AddressSearchRequest request,
-        CancellationToken ct = default)
+       AddressSearchRequest request,
+       CancellationToken ct = default)
     {
-        var (items, totalCount) = await _addresses.SearchAsync(
+        (IReadOnlyList<Address> items, int totalCount) = await _addresses.SearchAsync(
             request.Street,
             request.CityName,
             request.CountryName,
             request.Page,
             request.PageSize,
+            request.SortBy,
+            request.SortDirection,
             ct);
 
         return new PagedResult<AddressDto>(

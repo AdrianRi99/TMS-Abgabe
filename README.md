@@ -3,14 +3,17 @@
 Client/Server-Anwendung zur Verwaltung von Adressen.  
 Backend: .NET 10 / ASP.NET Core Web API · Datenbank: PostgreSQL · Frontend: Angular (Standalone Components, Signals).
 
+**Arbeitsaufwand:** ca. 5 h 30 min
+
 ## Funktionen
 
 - Adressen erfassen, bearbeiten und löschen (Straße, Hausnummer, Zusatz, PLZ, Stadt, Land)
 - Liste mit kombinierbaren Filtern (Straße, Stadt, Land; case-insensitive, Teilstring), Paging serverseitig
+- Sortierung nach allen Spalten (auf- und absteigend), wählbar per Klick auf den Spaltenheader
 - Autocomplete-Vorschläge in Filter und Formular
 - Validierung im Frontend (feldspezifisch) und im Backend (FluentValidation)
 - Login und Registrierung (JWT), Demo-Zugang per Button
-- Responsives Layout (Tabelle auf Desktop, Karten auf Mobile)
+- Responsives Layout: Tabelle auf Desktop, Karten-Ansicht auf Mobile (< 768 px)
 
 ## Voraussetzungen
 
@@ -56,6 +59,18 @@ Die App läuft auf `http://localhost:4200`.
 
 Über **„Demo-Zugang nutzen"** einloggen oder mit `demo@tms.dev` / `Demo1234`.  
 Alternativ über „Registrieren" ein eigenes Konto anlegen.
+
+## API-Dokumentation
+
+Die API ist im Development-Modus interaktiv dokumentiert und testbar über **Scalar**:
+
+```
+http://localhost:5078/scalar/v1
+```
+
+Scalar zeigt alle Endpoints mit Parametern, Request/Response-Schemas und Code-Beispielen
+in mehreren Sprachen. Das zugrundeliegende OpenAPI 3.0-Schema ist direkt abrufbar unter
+`http://localhost:5078/openapi/v1.json`.
 
 ## Tests
 
@@ -156,10 +171,11 @@ einer Adresse werden Stadt und Land anhand der Eingabe gesucht oder angelegt
 | Persistenz | EF Core + Npgsql | Standard-ORM, Migrationen, LINQ-Queries laufen vollständig in der DB |
 | Validierung | FluentValidation, per globalem Action-Filter | Regeln in der Application-Schicht, einheitlich 400 mit feldbezogenen Fehlern |
 | Authentifizierung | ASP.NET Core Identity + JWT | Hashing, Lockout und Duplikatsprüfung vom Framework; JWT, da Frontend und API getrennt laufen |
+| API-Dokumentation | Scalar (OpenAPI 3.0) | Interaktive Doku mit Code-Beispielen, direkt aus dem laufenden Backend generiert |
 | Tests | xUnit, NSubstitute, FluentAssertions 7 | Handler gegen Repository-Interfaces testbar, ohne Datenbank |
 | API-Client | Handgeschrieben, OpenAPI-Schema vorhanden | Schema mit stabilen operationIds bereit für Generator (ng-openapi-gen, nswag, o. ä.) |
 | Frontend | Angular Standalone + Signals | Kein NgModule-Overhead, einfacher Zustand ohne zusätzliche State-Management-Bibliothek |
-| Suche | Serverseitig, `ILIKE`, Paging mit `Skip/Take`, `AsNoTracking` | Skaliert mit der Datenmenge, nichts wird im Speicher gefiltert |
+| Suche & Sortierung | Serverseitig, `ILIKE`, `ORDER BY`, Paging mit `Skip/Take`, `AsNoTracking` | Skaliert mit der Datenmenge, nichts wird im Speicher gefiltert oder sortiert |
 
 ## Bekannte Einschränkungen / nächste Schritte
 
@@ -168,6 +184,5 @@ einer Adresse werden Stadt und Land anhand der Eingabe gesucht oder angelegt
 - **Suche bei sehr großen Datenmengen**: `ILIKE '%…%'` kann keinen B-Tree-Index nutzen.
   Nächster Schritt: `pg_trgm` mit GIN-Index. `OFFSET`-Paging wird bei sehr tiefen Seiten langsamer (Alternative: Keyset-Paging).
 - **Autocomplete für Straßen** schlägt nur Werte der aktuell geladenen Seite vor. Die Suche selbst durchsucht alle Daten.
-- **Sortierung** ist fest (Straße, Hausnummer), nicht durch den Nutzer wählbar.
 - **Tests**: Unit-Tests für Validierung und Handler; keine Integrationstests gegen eine echte Datenbank.
 - Migrationen und Seed laufen beim Start automatisch. Für Produktion gehört das in einen separaten Deployment-Schritt.

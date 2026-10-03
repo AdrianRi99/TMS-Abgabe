@@ -142,3 +142,4 @@ C:\Users\adrie\OneDrive\Dokumente\SoftwareEntwicklung\VisualStudioCode\.NET\Proj
 C:\Users\adrie\OneDrive\Dokumente\SoftwareEntwicklung\VisualStudioCode\.NET\Projekte\TMS\src\Api\bin\Debug\net10.0\TMS.Identity.Infrastructure.dll
 C:\Users\adrie\OneDrive\Dokumente\SoftwareEntwicklung\VisualStudioCode\.NET\Projekte\TMS\src\Api\bin\Debug\net10.0\TMS.Identity.Application.pdb
 C:\Users\adrie\OneDrive\Dokumente\SoftwareEntwicklung\VisualStudioCode\.NET\Projekte\TMS\src\Api\bin\Debug\net10.0\TMS.Identity.Infrastructure.pdb
+C:\Users\adrie\OneDrive\Dokumente\SoftwareEntwicklung\VisualStudioCode\.NET\Projekte\TMS\src\Api\bin\Debug\net10.0\Scalar.AspNetCore.dll

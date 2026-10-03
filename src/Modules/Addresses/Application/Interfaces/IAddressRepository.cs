@@ -11,10 +11,10 @@ public interface IAddressRepository
         string? countryName,
         int page,
         int pageSize,
+        string sortBy,
+        string sortDirection,
         CancellationToken ct = default);
     Task AddAsync(Address address, CancellationToken ct = default);
     Task UpdateAsync(Address address, CancellationToken ct = default);
     Task DeleteAsync(Guid id, CancellationToken ct = default);
-
-
 }
