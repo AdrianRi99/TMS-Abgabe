@@ -15,4 +15,8 @@ public interface IAddressRepository
     Task AddAsync(Address address, CancellationToken ct = default);
     Task UpdateAsync(Address address, CancellationToken ct = default);
     Task DeleteAsync(Guid id, CancellationToken ct = default);
+
+    Task<IReadOnlyList<string>> GetStreetSuggestionsAsync(string term, CancellationToken ct = default);
+    Task<IReadOnlyList<string>> GetCitySuggestionsAsync(string term, CancellationToken ct = default);
+    Task<IReadOnlyList<string>> GetCountrySuggestionsAsync(string term, CancellationToken ct = default);
 }

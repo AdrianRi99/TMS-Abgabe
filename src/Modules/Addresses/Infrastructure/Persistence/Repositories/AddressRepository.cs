@@ -23,12 +23,12 @@ public class AddressRepository : IAddressRepository
     }
 
     public async Task<(IReadOnlyList<Address> Items, int TotalCount)> SearchAsync(
-        string? street,
-        string? cityName,
-        string? countryName,
-        int page,
-        int pageSize,
-        CancellationToken ct = default)
+    string? street,
+    string? cityName,
+    string? countryName,
+    int page,
+    int pageSize,
+    CancellationToken ct = default)
     {
         var query = _context.Addresses
             .AsNoTracking()
@@ -37,13 +37,13 @@ public class AddressRepository : IAddressRepository
             .AsQueryable();
 
         if (!string.IsNullOrWhiteSpace(street))
-            query = query.Where(a => a.Street.Contains(street));
+            query = query.Where(a => EF.Functions.ILike(a.Street, $"%{street}%"));
 
         if (!string.IsNullOrWhiteSpace(cityName))
-            query = query.Where(a => a.City.Name.Contains(cityName));
+            query = query.Where(a => EF.Functions.ILike(a.City.Name, $"%{cityName}%"));
 
         if (!string.IsNullOrWhiteSpace(countryName))
-            query = query.Where(a => a.City.Country.Name.Contains(countryName));
+            query = query.Where(a => EF.Functions.ILike(a.City.Country.Name, $"%{countryName}%"));
 
         var totalCount = await query.CountAsync(ct);
 
@@ -76,5 +76,61 @@ public class AddressRepository : IAddressRepository
 
         _context.Addresses.Remove(address);
         await _context.SaveChangesAsync(ct);
+    }
+
+
+    public async Task<IReadOnlyList<string>> GetStreetSuggestionsAsync(
+     string term, CancellationToken ct = default)
+    {
+        var query = _context.Addresses.AsNoTracking();
+
+        if (!string.IsNullOrWhiteSpace(term))
+            query = query.Where(a => EF.Functions.ILike(a.Street, $"%{term}%"));
+
+        return await query
+            .Select(a => a.Street)
+            .Distinct()
+            .OrderBy(s => s)
+            .Take(50)
+            .ToListAsync(ct);
+    }
+
+    public async Task<IReadOnlyList<string>> GetCitySuggestionsAsync(
+        string term, CancellationToken ct = default)
+    {
+        var query = _context.Addresses
+            .AsNoTracking()
+            .Include(a => a.City)
+            .AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(term))
+            query = query.Where(a => EF.Functions.ILike(a.City.Name, $"%{term}%"));
+
+        return await query
+            .Select(a => a.City.Name)
+            .Distinct()
+            .OrderBy(s => s)
+            .Take(50)
+            .ToListAsync(ct);
+    }
+
+    public async Task<IReadOnlyList<string>> GetCountrySuggestionsAsync(
+        string term, CancellationToken ct = default)
+    {
+        var query = _context.Addresses
+            .AsNoTracking()
+            .Include(a => a.City)
+            .ThenInclude(c => c.Country)
+            .AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(term))
+            query = query.Where(a => EF.Functions.ILike(a.City.Country.Name, $"%{term}%"));
+
+        return await query
+            .Select(a => a.City.Country.Name)
+            .Distinct()
+            .OrderBy(s => s)
+            .Take(50)
+            .ToListAsync(ct);
     }
 }

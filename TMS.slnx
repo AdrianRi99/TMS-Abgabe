@@ -14,6 +14,13 @@
   <Folder Name="/src/Modules/Addresses/Infrastructure/">
     <Project Path="src/Modules/Addresses/Infrastructure/TMS.Addresses.Infrastructure.csproj" />
   </Folder>
+  <Folder Name="/src/Modules/Identity/" />
+  <Folder Name="/src/Modules/Identity/Application/">
+    <Project Path="src/Modules/Identity/Application/TMS.Identity.Application.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Identity/Infrastructure/">
+    <Project Path="src/Modules/Identity/Infrastructure/TMS.Identity.Infrastructure.csproj" />
+  </Folder>
   <Folder Name="/tests/" />
   <Folder Name="/tests/Addresses/">
     <Project Path="tests/Addresses/TMS.Addresses.Tests.csproj" />

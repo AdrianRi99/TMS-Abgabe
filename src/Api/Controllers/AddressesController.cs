@@ -59,4 +59,31 @@ public class AddressesController : ControllerBase
         var deleted = await _handlers.DeleteAsync(id, ct);
         return deleted ? NoContent() : NotFound();
     }
+
+    [HttpGet("suggestions/streets")]
+    public async Task<ActionResult<IReadOnlyList<string>>> StreetSuggestions(
+    [FromQuery] string term = "",
+    CancellationToken ct = default)
+    {
+        var result = await _handlers.GetStreetSuggestionsAsync(term, ct);
+        return Ok(result);
+    }
+
+    [HttpGet("suggestions/cities")]
+    public async Task<ActionResult<IReadOnlyList<string>>> CitySuggestions(
+        [FromQuery] string term = "",
+        CancellationToken ct = default)
+    {
+        var result = await _handlers.GetCitySuggestionsAsync(term, ct);
+        return Ok(result);
+    }
+
+    [HttpGet("suggestions/countries")]
+    public async Task<ActionResult<IReadOnlyList<string>>> CountrySuggestions(
+        [FromQuery] string term = "",
+        CancellationToken ct = default)
+    {
+        var result = await _handlers.GetCountrySuggestionsAsync(term, ct);
+        return Ok(result);
+    }
 }

@@ -7,7 +7,6 @@ C:\Users\adrie\OneDrive\Dokumente\SoftwareEntwicklung\VisualStudioCode\.NET\Proj
 C:\Users\adrie\OneDrive\Dokumente\SoftwareEntwicklung\VisualStudioCode\.NET\Projekte\TMS\src\Api\bin\Debug\net10.0\TMS.Api.dll
 C:\Users\adrie\OneDrive\Dokumente\SoftwareEntwicklung\VisualStudioCode\.NET\Projekte\TMS\src\Api\bin\Debug\net10.0\TMS.Api.pdb
 C:\Users\adrie\OneDrive\Dokumente\SoftwareEntwicklung\VisualStudioCode\.NET\Projekte\TMS\src\Api\bin\Debug\net10.0\FluentValidation.dll
-C:\Users\adrie\OneDrive\Dokumente\SoftwareEntwicklung\VisualStudioCode\.NET\Projekte\TMS\src\Api\bin\Debug\net10.0\FluentValidation.AspNetCore.dll
 C:\Users\adrie\OneDrive\Dokumente\SoftwareEntwicklung\VisualStudioCode\.NET\Projekte\TMS\src\Api\bin\Debug\net10.0\FluentValidation.DependencyInjectionExtensions.dll
 C:\Users\adrie\OneDrive\Dokumente\SoftwareEntwicklung\VisualStudioCode\.NET\Projekte\TMS\src\Api\bin\Debug\net10.0\Microsoft.AspNetCore.OpenApi.dll
 C:\Users\adrie\OneDrive\Dokumente\SoftwareEntwicklung\VisualStudioCode\.NET\Projekte\TMS\src\Api\bin\Debug\net10.0\Microsoft.EntityFrameworkCore.dll
@@ -129,3 +128,17 @@ C:\Users\adrie\OneDrive\Dokumente\SoftwareEntwicklung\VisualStudioCode\.NET\Proj
 C:\Users\adrie\OneDrive\Dokumente\SoftwareEntwicklung\VisualStudioCode\.NET\Projekte\TMS\src\Api\bin\Debug\net10.0\tr\Microsoft.CodeAnalysis.Workspaces.MSBuild.resources.dll
 C:\Users\adrie\OneDrive\Dokumente\SoftwareEntwicklung\VisualStudioCode\.NET\Projekte\TMS\src\Api\bin\Debug\net10.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.MSBuild.resources.dll
 C:\Users\adrie\OneDrive\Dokumente\SoftwareEntwicklung\VisualStudioCode\.NET\Projekte\TMS\src\Api\bin\Debug\net10.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.MSBuild.resources.dll
+C:\Users\adrie\OneDrive\Dokumente\SoftwareEntwicklung\VisualStudioCode\.NET\Projekte\TMS\src\Api\bin\Debug\net10.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\adrie\OneDrive\Dokumente\SoftwareEntwicklung\VisualStudioCode\.NET\Projekte\TMS\src\Api\bin\Debug\net10.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+C:\Users\adrie\OneDrive\Dokumente\SoftwareEntwicklung\VisualStudioCode\.NET\Projekte\TMS\src\Api\bin\Debug\net10.0\Microsoft.Bcl.Cryptography.dll
+C:\Users\adrie\OneDrive\Dokumente\SoftwareEntwicklung\VisualStudioCode\.NET\Projekte\TMS\src\Api\bin\Debug\net10.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\adrie\OneDrive\Dokumente\SoftwareEntwicklung\VisualStudioCode\.NET\Projekte\TMS\src\Api\bin\Debug\net10.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\adrie\OneDrive\Dokumente\SoftwareEntwicklung\VisualStudioCode\.NET\Projekte\TMS\src\Api\bin\Debug\net10.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\adrie\OneDrive\Dokumente\SoftwareEntwicklung\VisualStudioCode\.NET\Projekte\TMS\src\Api\bin\Debug\net10.0\Microsoft.IdentityModel.Protocols.dll
+C:\Users\adrie\OneDrive\Dokumente\SoftwareEntwicklung\VisualStudioCode\.NET\Projekte\TMS\src\Api\bin\Debug\net10.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\adrie\OneDrive\Dokumente\SoftwareEntwicklung\VisualStudioCode\.NET\Projekte\TMS\src\Api\bin\Debug\net10.0\Microsoft.IdentityModel.Tokens.dll
+C:\Users\adrie\OneDrive\Dokumente\SoftwareEntwicklung\VisualStudioCode\.NET\Projekte\TMS\src\Api\bin\Debug\net10.0\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\adrie\OneDrive\Dokumente\SoftwareEntwicklung\VisualStudioCode\.NET\Projekte\TMS\src\Api\bin\Debug\net10.0\TMS.Identity.Application.dll
+C:\Users\adrie\OneDrive\Dokumente\SoftwareEntwicklung\VisualStudioCode\.NET\Projekte\TMS\src\Api\bin\Debug\net10.0\TMS.Identity.Infrastructure.dll
+C:\Users\adrie\OneDrive\Dokumente\SoftwareEntwicklung\VisualStudioCode\.NET\Projekte\TMS\src\Api\bin\Debug\net10.0\TMS.Identity.Application.pdb
+C:\Users\adrie\OneDrive\Dokumente\SoftwareEntwicklung\VisualStudioCode\.NET\Projekte\TMS\src\Api\bin\Debug\net10.0\TMS.Identity.Infrastructure.pdb

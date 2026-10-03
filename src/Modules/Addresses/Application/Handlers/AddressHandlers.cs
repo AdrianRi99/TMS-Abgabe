@@ -97,4 +97,16 @@ public class AddressHandlers
         await _cities.AddAsync(city, ct);
         return city.Id;
     }
+
+    public async Task<IReadOnlyList<string>> GetStreetSuggestionsAsync(
+    string term, CancellationToken ct = default) =>
+    await _addresses.GetStreetSuggestionsAsync(term, ct);
+
+    public async Task<IReadOnlyList<string>> GetCitySuggestionsAsync(
+        string term, CancellationToken ct = default) =>
+        await _addresses.GetCitySuggestionsAsync(term, ct);
+
+    public async Task<IReadOnlyList<string>> GetCountrySuggestionsAsync(
+        string term, CancellationToken ct = default) =>
+        await _addresses.GetCountrySuggestionsAsync(term, ct);
 }
