@@ -15,6 +15,12 @@ Backend: .NET 10 / ASP.NET Core Web API · Datenbank: PostgreSQL · Frontend: An
 - Login und Registrierung (JWT), Demo-Zugang per Button
 - Responsives Layout: Tabelle auf Desktop, Karten-Ansicht auf Mobile (< 768 px)
 
+## Screenshots
+
+| Login | Adressliste | Adresse anlegen |
+|---|---|---|
+| ![Login](docs/screenshots/login.png) | ![Liste](docs/screenshots/list.png) | ![Modal](docs/screenshots/modal.png) |
+
 ## Voraussetzungen
 
 | Tool | Version |
@@ -186,3 +192,4 @@ einer Adresse werden Stadt und Land anhand der Eingabe gesucht oder angelegt
 - **Autocomplete für Straßen** schlägt nur Werte der aktuell geladenen Seite vor. Die Suche selbst durchsucht alle Daten.
 - **Tests**: Unit-Tests für Validierung und Handler; keine Integrationstests gegen eine echte Datenbank.
 - Migrationen und Seed laufen beim Start automatisch. Für Produktion gehört das in einen separaten Deployment-Schritt.
+-  **Kein lokales Datencaching**: Liste wird bei jeder Aktion neu vom Server geladen – für größere Anwendungen wäre ein Cache-Service mit gezielter Invalidierung sinnvoll
