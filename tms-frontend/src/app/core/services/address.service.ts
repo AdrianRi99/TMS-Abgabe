@@ -5,6 +5,7 @@ import { API_URL } from '../api-config';
 
 export interface AddressDto {
   id: string;
+  name: string;
   street: string;
   houseNumber: string;
   supplement?: string;
@@ -26,7 +27,7 @@ export interface PagedResult<T> {
 export interface AddressSearchParams {
   street?: string;
   cityName?: string;
-  countryName?: string;
+  countryName?: string; 
   page?: number;
   pageSize?: number;
   sortBy?: string;
@@ -34,6 +35,7 @@ export interface AddressSearchParams {
 }
 
 export interface CreateAddressRequest {
+  name: string;      
   street: string;
   houseNumber: string;
   supplement?: string;

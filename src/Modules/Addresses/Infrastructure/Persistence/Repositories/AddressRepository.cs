@@ -53,6 +53,9 @@ public class AddressRepository : IAddressRepository
 
         query = sortBy.ToLowerInvariant() switch
         {
+            "name" => desc
+                ? query.OrderByDescending(a => a.Name)
+                : query.OrderBy(a => a.Name),
             "housenumber" => desc
                 ? query.OrderByDescending(a => a.HouseNumber)
                 : query.OrderBy(a => a.HouseNumber),

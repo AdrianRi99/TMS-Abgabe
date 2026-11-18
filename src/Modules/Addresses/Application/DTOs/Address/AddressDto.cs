@@ -2,6 +2,7 @@ namespace TMS.Addresses.Application.DTOs.AddressDTO;
 
 public record AddressDto(
     Guid Id,
+    string Name,
     string Street,
     string HouseNumber,
     string? Supplement,

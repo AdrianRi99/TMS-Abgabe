@@ -9,17 +9,18 @@ namespace TMS.Addresses.Application.DTOs.Mappings;
 public static class AddressMappings
 {
     public static AddressDto ToDto(this Address a) => new(
-        a.Id,
-        a.Street,
-        a.HouseNumber,
-        a.Supplement,
-        a.CityId,
-        a.City.Name,
-        a.City.ZipCode,
-        a.City.CountryId,
-        a.City.Country.Name
+    a.Id,
+    a.Name,
+    a.Street,
+    a.HouseNumber,
+    a.Supplement,
+    a.CityId,
+    a.City.Name,
+    a.City.ZipCode,
+    a.City.CountryId,
+    a.City.Country.Name
     );
-
+    
     public static CityDto ToDto(this City c) => new(
         c.Id,
         c.Name,

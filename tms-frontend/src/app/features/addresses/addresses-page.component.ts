@@ -55,15 +55,19 @@ import { ToastService } from '../../shared/services/toast.service';
         <div class="table-card">
           <table>
             <colgroup>
-              <col style="width: 20%" />
-              <col style="width: 20%" />
-              <col style="width: 16%" />
-              <col style="width: 12%" />
-              <col style="width: 14%" />
               <col style="width: 18%" />
+              <col style="width: 16%" />
+              <col style="width: 14%" />
+              <col style="width: 12%" />
+              <col style="width: 10%" />
+              <col style="width: 14%" />
+              <col style="width: 16%" />
             </colgroup>
             <thead>
               <tr>
+                <th (click)="sort('name')" class="sortable">
+                  NAME <span class="sort-icon">{{ sortIcons()['name'] }}</span>
+                </th>
                 <th (click)="sort('street')" class="sortable">
                   STRASSE <span class="sort-icon">{{ sortIcons()['street'] }}</span>
                 </th>
@@ -85,6 +89,7 @@ import { ToastService } from '../../shared/services/toast.service';
             <tbody>
               @for (address of addresses(); track address.id) {
                 <tr (click)="openEdit(address)">
+                  <td><strong>{{ address.name }}</strong></td>
                   <td>{{ address.street }}</td>
                   <td>{{ address.houseNumber }}</td>
                   <td class="muted">{{ address.supplement ?? '–' }}</td>
@@ -93,7 +98,7 @@ import { ToastService } from '../../shared/services/toast.service';
                   <td>{{ address.countryName }}</td>
                 </tr>
               } @empty {
-                <tr><td colspan="6" class="empty">Keine Adressen gefunden.</td></tr>
+                <tr><td colspan="7" class="empty">Keine Adressen gefunden.</td></tr>
               }
             </tbody>
           </table>
@@ -104,10 +109,10 @@ import { ToastService } from '../../shared/services/toast.service';
             <div class="address-card" tabindex="0" role="button"
                  (click)="openEdit(address)"
                  (keydown.enter)="openEdit(address)">
-              <div class="title">
-                {{ address.street }} {{ address.houseNumber }}{{ address.supplement ? ', ' + address.supplement : '' }}
-              </div>
+              <div class="title">{{ address.name }}</div>
               <div class="sub">
+                {{ address.street }} {{ address.houseNumber }}
+                {{ address.supplement ? ', ' + address.supplement : '' }} –
                 {{ address.zipCode }} {{ address.cityName }}, {{ address.countryName }}
               </div>
               <svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none"
@@ -222,7 +227,6 @@ import { ToastService } from '../../shared/services/toast.service';
       cursor: pointer;
       user-select: none;
       white-space: nowrap;
-
       &:hover { color: var(--color-primary); }
     }
     .sort-icon {
@@ -342,13 +346,13 @@ export class AddressesPageComponent implements OnInit {
   filterCity = signal('');
   filterCountry = signal('');
 
-  sortBy = signal('street');
+  sortBy = signal('name');
   sortDirection = signal<'asc' | 'desc'>('asc');
 
   sortIcons = computed(() => {
     const by = this.sortBy();
     const dir = this.sortDirection();
-    const fields = ['street', 'housenumber', 'zipcode', 'city', 'country'];
+    const fields = ['name', 'street', 'housenumber', 'zipcode', 'city', 'country'];
     const result: Record<string, string> = {};
     for (const f of fields) {
       result[f] = by === f ? (dir === 'asc' ? '↑' : '↓') : '↕';
@@ -450,7 +454,12 @@ export class AddressesPageComponent implements OnInit {
         this.toast.show(selected ? 'Adresse gespeichert.' : 'Adresse angelegt.', 'success');
         this.closeModal();
         this.loadAddresses();
-        this.cityService.getAll().subscribe(c => this.cities.set(c));
+        const cityKnown = this.cities().some(
+          c => c.name.toLowerCase() === req.cityName.toLowerCase()
+        );
+        if (!cityKnown) {
+          this.cityService.getAll().subscribe(c => this.cities.set(c));
+        }
       },
       error: (err: HttpErrorResponse) => {
         if (err.status === 400 && err.error?.errors) {

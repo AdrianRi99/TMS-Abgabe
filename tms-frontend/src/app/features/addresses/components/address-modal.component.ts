@@ -1,10 +1,11 @@
-import { Component, Input, input, output, OnInit, signal, computed, inject } from '@angular/core';
+import { Component, input, output, OnInit, signal, computed, inject } from '@angular/core';
 import { AddressDto } from '../../../core/services/address.service';
 import { CityDto } from '../../../core/services/city.service';
 import { AutocompleteComponent } from '../../../shared/components/autocomplete.component';
 import { ToastService } from '../../../shared/services/toast.service';
 
 export interface SaveAddressRequest {
+  name: string;
   street: string;
   houseNumber: string;
   supplement?: string;
@@ -14,6 +15,7 @@ export interface SaveAddressRequest {
 }
 
 interface FieldErrors {
+  nameErr: string | null;
   streetErr: string | null;
   houseNumberErr: string | null;
   supplementErr: string | null;
@@ -32,6 +34,21 @@ interface FieldErrors {
         <h3>{{ address() ? 'Adresse bearbeiten' : 'Neue Adresse' }}</h3>
 
         <div class="form-grid">
+          <div class="form-field full">
+            <label>Name / Firma</label>
+            <input
+              [value]="name()"
+              placeholder="z. B. Max Mustermann oder Musterfirma GmbH"
+              [class.invalid]="!!fieldErrors().nameErr"
+              (input)="name.set(getValue($event))" />
+            @if (fieldErrors().nameErr) {
+              <span class="error-msg">{{ fieldErrors().nameErr }}</span>
+            }
+            @if (serverErrors()['Name']?.[0]) {
+              <span class="error-msg">{{ serverErrors()['Name'][0] }}</span>
+            }
+          </div>
+
           <div class="form-field">
             <label>Straße</label>
             <app-autocomplete
@@ -156,6 +173,8 @@ interface FieldErrors {
     .modal {
       width: 500px;
       max-width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
       padding: 36px;
       background: var(--color-white);
       border-radius: 12px;
@@ -182,6 +201,7 @@ interface FieldErrors {
       gap: 6px;
 
       label { font-size: 13px; font-weight: 600; }
+      input.invalid { border-color: var(--color-danger); }
     }
     .optional { font-weight: 400; color: var(--color-text-muted); }
     .error-msg { font-size: 12px; color: var(--color-danger); }
@@ -237,6 +257,7 @@ export class AddressModalComponent implements OnInit {
 
   private toast = inject(ToastService);
 
+  name = signal('');
   street = signal('');
   houseNumber = signal('');
   supplement = signal('');
@@ -245,6 +266,7 @@ export class AddressModalComponent implements OnInit {
   countryName = signal('');
 
   fieldErrors = signal<FieldErrors>({
+    nameErr: null,
     streetErr: null,
     houseNumberErr: null,
     supplementErr: null,
@@ -271,6 +293,7 @@ export class AddressModalComponent implements OnInit {
   ngOnInit() {
     const a = this.address();
     if (a) {
+      this.name.set(a.name ?? '');
       this.street.set(a.street);
       this.houseNumber.set(a.houseNumber);
       this.supplement.set(a.supplement ?? '');
@@ -302,31 +325,28 @@ export class AddressModalComponent implements OnInit {
   }
 
   onSave() {
+    const nameErr = !this.name().trim() ? 'Pflichtfeld'
+      : this.name().length > 200 ? 'Maximal 200 Zeichen' : null;
     const streetErr = !this.street().trim() ? 'Pflichtfeld'
       : this.street().length > 200 ? 'Maximal 200 Zeichen' : null;
-
     const houseNumberErr = !this.houseNumber().trim() ? 'Pflichtfeld'
       : this.houseNumber().length > 10 ? 'Maximal 10 Zeichen' : null;
-
     const supplementErr = this.supplement().length > 100
       ? 'Maximal 100 Zeichen' : null;
-
     const cityErr = !this.cityName().trim() ? 'Pflichtfeld'
       : this.cityName().length > 100 ? 'Maximal 100 Zeichen' : null;
-
     const zipErr = !this.zipCode().trim() ? 'Pflichtfeld'
       : this.zipCode().length > 20 ? 'Maximal 20 Zeichen' : null;
-
     const countryErr = !this.countryName().trim() ? 'Pflichtfeld'
       : this.countryName().length > 100 ? 'Maximal 100 Zeichen' : null;
 
     this.fieldErrors.set({
-      streetErr, houseNumberErr, supplementErr,
-      cityErr, zipErr, countryErr
+      nameErr, streetErr, houseNumberErr,
+      supplementErr, cityErr, zipErr, countryErr
     });
 
-    const hasErrors = [streetErr, houseNumberErr, supplementErr,
-      cityErr, zipErr, countryErr].some(e => e !== null);
+    const hasErrors = [nameErr, streetErr, houseNumberErr,
+      supplementErr, cityErr, zipErr, countryErr].some(e => e !== null);
 
     if (hasErrors) {
       this.toast.show('Bitte alle Pflichtfelder prüfen.', 'warning');
@@ -334,6 +354,7 @@ export class AddressModalComponent implements OnInit {
     }
 
     this.save.emit({
+      name: this.name().trim(),
       street: this.street().trim(),
       houseNumber: this.houseNumber().trim(),
       supplement: this.supplement().trim() || undefined,

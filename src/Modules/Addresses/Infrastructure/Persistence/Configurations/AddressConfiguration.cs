@@ -12,6 +12,10 @@ public class AddressConfiguration : IEntityTypeConfiguration<Address>
 
         builder.HasKey(a => a.Id);
 
+        builder.Property(a => a.Name)
+            .HasMaxLength(200)
+            .IsRequired();
+
         builder.Property(a => a.Street)
             .HasMaxLength(200)
             .IsRequired();

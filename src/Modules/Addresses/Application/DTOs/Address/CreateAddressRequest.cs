@@ -1,7 +1,7 @@
 namespace TMS.Addresses.Application.DTOs.AddressDTO;
 
-
 public record CreateAddressRequest(
+    string Name,
     string Street,
     string HouseNumber,
     string? Supplement,

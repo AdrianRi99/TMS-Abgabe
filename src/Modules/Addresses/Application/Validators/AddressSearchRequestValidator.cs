@@ -8,7 +8,7 @@ public class AddressSearchRequestValidator : AbstractValidator<AddressSearchRequ
     public const int MaxPageSize = 100;
 
     private static readonly string[] ValidSortFields =
-        ["street", "housenumber", "zipcode", "city", "country"];
+        ["name","street", "housenumber", "zipcode", "city", "country"];
 
     public AddressSearchRequestValidator()
     {

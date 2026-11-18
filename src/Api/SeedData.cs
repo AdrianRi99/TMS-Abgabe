@@ -69,45 +69,18 @@ public static class SeedData
 
         var addresses = new List<Address>
         {
-            // Deutschland
-            new("Musterstraße", "12", berlin.Id),
-            new("Hauptstraße", "45a", munich.Id, "2. OG"),
-            new("Gartenweg", "5", cologne.Id),
-            new("Industriestraße", "18", stuttgart.Id, "Halle 3"),
-            new("Schillerstraße", "3", berlin.Id),
-            new("Leopoldstraße", "99", munich.Id),
-            new("Kurfürstendamm", "200", berlin.Id),
-            new("Reeperbahn", "14", hamburg.Id, "Hinterhaus"),
-            new("Speicherstadt", "7", hamburg.Id),
-            new("Zeil", "106", frankfurt.Id),
-            new("Sachsenhäuser Ufer", "33", frankfurt.Id, "EG"),
-            new("Domstraße", "1", cologne.Id),
-
-            // Österreich
-            new("Ringstraße", "23", wien.Id, "Hinterhaus"),
-            new("Praterstraße", "44", wien.Id),
-            new("Mozartgasse", "11", graz.Id),
-            new("Herrengasse", "5", graz.Id, "Büro 3"),
-            new("Getreidegasse", "9", salzburg.Id),
-            new("Linzer Gasse", "28", salzburg.Id),
-
-            // Schweiz
-            new("Bahnhofstraße", "7", zurich.Id),
-            new("Seestraße", "88", zurich.Id),
-            new("Freie Straße", "12", basel.Id),
-            new("Marktplatz", "3", basel.Id, "1. OG"),
-
-            // Niederlande
-            new("Herengracht", "182", amsterdam.Id),
-            new("Damrak", "55", amsterdam.Id, "Zimmer 4"),
-            new("Keizersgracht", "240", amsterdam.Id),
-
-            // Italien
-            new("Via del Corso", "18", rome.Id),
-            new("Via Veneto", "54", rome.Id, "Suite 12"),
-            new("Piazza di Spagna", "3", rome.Id),
-            new("Via Montenapoleone", "8", milan.Id),
-            new("Corso Buenos Aires", "77", milan.Id),
+            new("Max Mustermann", "Musterstraße", "12", berlin.Id),
+            new("Musterfirma GmbH", "Hauptstraße", "45a", munich.Id, "2. OG"),
+            new("Hans Müller", "Bahnhofstraße", "7", zurich.Id),
+            new("Anna Schmidt", "Ringstraße", "23", wien.Id, "Hinterhaus"),
+            new("Peter Weber", "Gartenweg", "5", cologne.Id),
+            new("Logistik AG", "Industriestraße", "18", stuttgart.Id, "Halle 3"),
+            new("Maria Fischer", "Schillerstraße", "3", berlin.Id),
+            new("Josef Huber", "Mozartgasse", "11", graz.Id),
+            new("See Hotel AG", "Seestraße", "88", zurich.Id),
+            new("Wien Consulting", "Praterstraße", "44", wien.Id),
+            new("Tech GmbH", "Leopoldstraße", "99", munich.Id),
+            new("Berliner Handel", "Kurfürstendamm", "200", berlin.Id),
         };
 
         await context.Addresses.AddRangeAsync(addresses);

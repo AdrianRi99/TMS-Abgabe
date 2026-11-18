@@ -59,20 +59,23 @@ public class AddressHandlers
         CreateAddressRequest request, CancellationToken ct = default)
     {
         _logger.LogInformation(
-            "Creating address: {Street} {HouseNumber}, {CityName}, {CountryName}",
-            request.Street, request.HouseNumber, request.CityName, request.CountryName);
+            "Creating address: {Name}, {Street} {HouseNumber}, {CityName}, {CountryName}",
+            request.Name, request.Street, request.HouseNumber, request.CityName, request.CountryName);
 
         var (city, country) = await ResolveOrCreateCityAsync(
             request.CityName, request.ZipCode, request.CountryName, ct);
 
-        var address = new Address(request.Street, request.HouseNumber, city.Id, request.Supplement);
+        var address = new Address(
+            request.Name, request.Street, request.HouseNumber,
+            city.Id, request.Supplement);
+
         await _addresses.AddAsync(address, ct);
 
         _logger.LogInformation("Address created with id {AddressId}", address.Id);
 
-        // Kein zweiter GetByIdAsync – City und Country sind bereits bekannt
         return new AddressDto(
             address.Id,
+            address.Name,
             address.Street,
             address.HouseNumber,
             address.Supplement,
@@ -95,7 +98,6 @@ public class AddressHandlers
 
         _logger.LogInformation("Updating address {AddressId}", id);
 
-        // ResolveOrCreateCity nur aufrufen wenn sich Stadt, PLZ oder Land geändert haben
         City city;
         Country country;
 
@@ -115,12 +117,13 @@ public class AddressHandlers
                 request.CityName, request.ZipCode, request.CountryName, ct);
         }
 
-        address.Update(request.Street, request.HouseNumber, city.Id, request.Supplement);
+        address.Update(request.Name, request.Street, request.HouseNumber,
+            city.Id, request.Supplement);
         await _addresses.UpdateAsync(address, ct);
 
-        // Kein zweiter GetByIdAsync – alle Daten bereits vorhanden
         return new AddressDto(
             address.Id,
+            address.Name,
             address.Street,
             address.HouseNumber,
             address.Supplement,
@@ -145,7 +148,6 @@ public class AddressHandlers
         return true;
     }
 
-    // Gibt City und Country zurück damit Aufrufer keinen zweiten DB-Trip brauchen
     private async Task<(City City, Country Country)> ResolveOrCreateCityAsync(
         string cityName, string zipCode, string countryName, CancellationToken ct)
     {

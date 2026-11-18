@@ -7,6 +7,7 @@ public class CreateAddressValidator : AbstractValidator<CreateAddressRequest>
 {
     public CreateAddressValidator()
     {
+        RuleFor(x => x.Name).NotEmpty().MaximumLength(200);
         RuleFor(x => x.Street).NotEmpty().MaximumLength(200);
         RuleFor(x => x.HouseNumber).NotEmpty().MaximumLength(10);
         RuleFor(x => x.Supplement).MaximumLength(100).When(x => x.Supplement is not null);
