@@ -62,15 +62,25 @@ public class AddressHandlers
             "Creating address: {Street} {HouseNumber}, {CityName}, {CountryName}",
             request.Street, request.HouseNumber, request.CityName, request.CountryName);
 
-        var cityId = await ResolveOrCreateCityAsync(
+        var (city, country) = await ResolveOrCreateCityAsync(
             request.CityName, request.ZipCode, request.CountryName, ct);
-        var address = new Address(request.Street, request.HouseNumber, cityId, request.Supplement);
+
+        var address = new Address(request.Street, request.HouseNumber, city.Id, request.Supplement);
         await _addresses.AddAsync(address, ct);
 
         _logger.LogInformation("Address created with id {AddressId}", address.Id);
 
-        var created = await _addresses.GetByIdAsync(address.Id, ct);
-        return created!.ToDto();
+        // Kein zweiter GetByIdAsync – City und Country sind bereits bekannt
+        return new AddressDto(
+            address.Id,
+            address.Street,
+            address.HouseNumber,
+            address.Supplement,
+            city.Id,
+            city.Name,
+            city.ZipCode,
+            country.Id,
+            country.Name);
     }
 
     public async Task<AddressDto?> UpdateAsync(
@@ -85,13 +95,40 @@ public class AddressHandlers
 
         _logger.LogInformation("Updating address {AddressId}", id);
 
-        var cityId = await ResolveOrCreateCityAsync(
-            request.CityName, request.ZipCode, request.CountryName, ct);
-        address.Update(request.Street, request.HouseNumber, cityId, request.Supplement);
+        // ResolveOrCreateCity nur aufrufen wenn sich Stadt, PLZ oder Land geändert haben
+        City city;
+        Country country;
+
+        var cityUnchanged =
+            address.City.Name.Equals(request.CityName, StringComparison.OrdinalIgnoreCase) &&
+            address.City.ZipCode == request.ZipCode &&
+            address.City.Country.Name.Equals(request.CountryName, StringComparison.OrdinalIgnoreCase);
+
+        if (cityUnchanged)
+        {
+            city = address.City;
+            country = address.City.Country;
+        }
+        else
+        {
+            (city, country) = await ResolveOrCreateCityAsync(
+                request.CityName, request.ZipCode, request.CountryName, ct);
+        }
+
+        address.Update(request.Street, request.HouseNumber, city.Id, request.Supplement);
         await _addresses.UpdateAsync(address, ct);
 
-        var updated = await _addresses.GetByIdAsync(id, ct);
-        return updated!.ToDto();
+        // Kein zweiter GetByIdAsync – alle Daten bereits vorhanden
+        return new AddressDto(
+            address.Id,
+            address.Street,
+            address.HouseNumber,
+            address.Supplement,
+            city.Id,
+            city.Name,
+            city.ZipCode,
+            country.Id,
+            country.Name);
     }
 
     public async Task<bool> DeleteAsync(Guid id, CancellationToken ct = default)
@@ -108,7 +145,8 @@ public class AddressHandlers
         return true;
     }
 
-    private async Task<int> ResolveOrCreateCityAsync(
+    // Gibt City und Country zurück damit Aufrufer keinen zweiten DB-Trip brauchen
+    private async Task<(City City, Country Country)> ResolveOrCreateCityAsync(
         string cityName, string zipCode, string countryName, CancellationToken ct)
     {
         var country = await _countries.FindByNameAsync(countryName, ct);
@@ -120,13 +158,15 @@ public class AddressHandlers
         }
 
         var city = await _cities.FindAsync(cityName, zipCode, country.Id, ct);
-        if (city is not null) return city.Id;
+        if (city is null)
+        {
+            _logger.LogInformation(
+                "Creating new city: {CityName} {ZipCode} in {CountryName}",
+                cityName, zipCode, countryName);
+            city = new City(cityName, zipCode, country.Id);
+            await _cities.AddAsync(city, ct);
+        }
 
-        _logger.LogInformation(
-            "Creating new city: {CityName} {ZipCode} in {CountryName}",
-            cityName, zipCode, countryName);
-        city = new City(cityName, zipCode, country.Id);
-        await _cities.AddAsync(city, ct);
-        return city.Id;
+        return (city, country);
     }
 }
