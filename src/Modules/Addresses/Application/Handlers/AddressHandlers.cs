@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using TMS.Addresses.Application.DTOs.AddressDTO;
 using TMS.Addresses.Application.Common;
 using TMS.Addresses.Application.Interfaces;
@@ -11,59 +12,81 @@ public class AddressHandlers
     private readonly IAddressRepository _addresses;
     private readonly ICityRepository _cities;
     private readonly ICountryRepository _countries;
+    private readonly ILogger<AddressHandlers> _logger;
 
     public AddressHandlers(
         IAddressRepository addresses,
         ICityRepository cities,
-        ICountryRepository countries)
+        ICountryRepository countries,
+        ILogger<AddressHandlers> logger)
     {
         _addresses = addresses;
         _cities = cities;
         _countries = countries;
+        _logger = logger;
     }
 
     public async Task<AddressDto?> GetByIdAsync(Guid id, CancellationToken ct = default)
     {
+        _logger.LogDebug("Fetching address {AddressId}", id);
         var address = await _addresses.GetByIdAsync(id, ct);
+        if (address is null)
+            _logger.LogWarning("Address {AddressId} not found", id);
         return address?.ToDto();
     }
 
     public async Task<PagedResult<AddressDto>> SearchAsync(
-       AddressSearchRequest request,
-       CancellationToken ct = default)
+        AddressSearchRequest request, CancellationToken ct = default)
     {
-        (IReadOnlyList<Address> items, int totalCount) = await _addresses.SearchAsync(
-            request.Street,
-            request.CityName,
-            request.CountryName,
-            request.Page,
-            request.PageSize,
-            request.SortBy,
-            request.SortDirection,
-            ct);
+        _logger.LogDebug(
+            "Searching addresses: street={Street} city={City} country={Country} page={Page} sortBy={SortBy} sortDirection={SortDirection}",
+            request.Street, request.CityName, request.CountryName,
+            request.Page, request.SortBy, request.SortDirection);
+
+        var (items, totalCount) = await _addresses.SearchAsync(
+            request.Street, request.CityName, request.CountryName,
+            request.Page, request.PageSize,
+            request.SortBy, request.SortDirection, ct);
+
+        _logger.LogDebug("Search returned {Count} of {Total} addresses", items.Count, totalCount);
 
         return new PagedResult<AddressDto>(
             items.Select(a => a.ToDto()).ToList(),
-            totalCount,
-            request.Page,
-            request.PageSize);
+            totalCount, request.Page, request.PageSize);
     }
 
-    public async Task<AddressDto> CreateAsync(CreateAddressRequest request, CancellationToken ct = default)
+    public async Task<AddressDto> CreateAsync(
+        CreateAddressRequest request, CancellationToken ct = default)
     {
-        var cityId = await ResolveOrCreateCityAsync(request.CityName, request.ZipCode, request.CountryName, ct);
+        _logger.LogInformation(
+            "Creating address: {Street} {HouseNumber}, {CityName}, {CountryName}",
+            request.Street, request.HouseNumber, request.CityName, request.CountryName);
+
+        var cityId = await ResolveOrCreateCityAsync(
+            request.CityName, request.ZipCode, request.CountryName, ct);
         var address = new Address(request.Street, request.HouseNumber, cityId, request.Supplement);
         await _addresses.AddAsync(address, ct);
+
+        _logger.LogInformation("Address created with id {AddressId}", address.Id);
+
         var created = await _addresses.GetByIdAsync(address.Id, ct);
         return created!.ToDto();
     }
 
-    public async Task<AddressDto?> UpdateAsync(Guid id, UpdateAddressRequest request, CancellationToken ct = default)
+    public async Task<AddressDto?> UpdateAsync(
+        Guid id, UpdateAddressRequest request, CancellationToken ct = default)
     {
         var address = await _addresses.GetByIdAsync(id, ct);
-        if (address is null) return null;
+        if (address is null)
+        {
+            _logger.LogWarning("Update failed: address {AddressId} not found", id);
+            return null;
+        }
 
-        var cityId = await ResolveOrCreateCityAsync(request.CityName, request.ZipCode, request.CountryName, ct);
+        _logger.LogInformation("Updating address {AddressId}", id);
+
+        var cityId = await ResolveOrCreateCityAsync(
+            request.CityName, request.ZipCode, request.CountryName, ct);
         address.Update(request.Street, request.HouseNumber, cityId, request.Supplement);
         await _addresses.UpdateAsync(address, ct);
 
@@ -74,17 +97,24 @@ public class AddressHandlers
     public async Task<bool> DeleteAsync(Guid id, CancellationToken ct = default)
     {
         var address = await _addresses.GetByIdAsync(id, ct);
-        if (address is null) return false;
+        if (address is null)
+        {
+            _logger.LogWarning("Delete failed: address {AddressId} not found", id);
+            return false;
+        }
+
+        _logger.LogInformation("Deleting address {AddressId}", id);
         await _addresses.DeleteAsync(id, ct);
         return true;
     }
 
     private async Task<int> ResolveOrCreateCityAsync(
-    string cityName, string zipCode, string countryName, CancellationToken ct)
+        string cityName, string zipCode, string countryName, CancellationToken ct)
     {
         var country = await _countries.FindByNameAsync(countryName, ct);
         if (country is null)
         {
+            _logger.LogInformation("Creating new country: {CountryName}", countryName);
             country = new Country(countryName);
             await _countries.AddAsync(country, ct);
         }
@@ -92,10 +122,11 @@ public class AddressHandlers
         var city = await _cities.FindAsync(cityName, zipCode, country.Id, ct);
         if (city is not null) return city.Id;
 
+        _logger.LogInformation(
+            "Creating new city: {CityName} {ZipCode} in {CountryName}",
+            cityName, zipCode, countryName);
         city = new City(cityName, zipCode, country.Id);
         await _cities.AddAsync(city, ct);
         return city.Id;
     }
-
-
 }

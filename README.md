@@ -182,6 +182,7 @@ einer Adresse werden Stadt und Land anhand der Eingabe gesucht oder angelegt
 | API-Client | Handgeschrieben, OpenAPI-Schema vorhanden | Schema mit stabilen operationIds bereit für Generator (ng-openapi-gen, nswag, o. ä.) |
 | Frontend | Angular Standalone + Signals | Kein NgModule-Overhead, einfacher Zustand ohne zusätzliche State-Management-Bibliothek |
 | Suche & Sortierung | Serverseitig, `ILIKE`, `ORDER BY`, Paging mit `Skip/Take`, `AsNoTracking` | Skaliert mit der Datenmenge, nichts wird im Speicher gefiltert oder sortiert |
+| Logging | `ILogger<T>` (ASP.NET Core built-in) | Strukturiertes Logging mit Log-Levels; in Produktion austauschbar gegen Serilog / Application Insights ohne Codeänderung |
 
 ## Bekannte Einschränkungen / nächste Schritte
 
@@ -193,3 +194,4 @@ einer Adresse werden Stadt und Land anhand der Eingabe gesucht oder angelegt
 - **Tests**: Unit-Tests für Validierung und Handler; keine Integrationstests gegen eine echte Datenbank.
 - Migrationen und Seed laufen beim Start automatisch. Für Produktion gehört das in einen separaten Deployment-Schritt.
 -  **Kein lokales Datencaching**: Liste wird bei jeder Aktion neu vom Server geladen – für größere Anwendungen wäre ein Cache-Service mit gezielter Invalidierung sinnvoll
+- **Logging**: Aktuell nur Konsolen-Output. Für Produktion empfiehlt sich Serilog mit einem Sink (z. B. Seq, Elasticsearch oder Azure Application Insights).
