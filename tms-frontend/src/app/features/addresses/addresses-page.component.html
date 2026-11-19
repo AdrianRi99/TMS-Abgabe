@@ -1,0 +1,135 @@
+<div class="page">
+  <section class="filter-card" (keydown.enter)="vm.search()">
+    <div class="filter-field">
+      <label>Straße</label>
+      <app-autocomplete
+        [value]="vm.filterStreet()"
+        [suggestions]="vm.streetSuggestions()"
+        placeholder="z. B. Musterstraße"
+        (valueChange)="vm.filterStreet.set($event)" />
+    </div>
+    <div class="filter-field">
+      <label>Stadt</label>
+      <app-autocomplete
+        [value]="vm.filterCity()"
+        [suggestions]="vm.citySuggestions()"
+        placeholder="z. B. Berlin"
+        (valueChange)="vm.filterCity.set($event)" />
+    </div>
+    <div class="filter-field">
+      <label>Land</label>
+      <app-autocomplete
+        [value]="vm.filterCountry()"
+        [suggestions]="vm.countrySuggestions()"
+        placeholder="z. B. Deutschland"
+        (valueChange)="vm.filterCountry.set($event)" />
+    </div>
+    <div class="filter-actions">
+      <button type="button" class="btn-primary" (click)="vm.search()">Suchen</button>
+      <button type="button" class="reset-link" (click)="vm.resetFilter()">Filter zurücksetzen</button>
+    </div>
+  </section>
+
+  <div class="page-header">
+    <h2>Adressen</h2>
+    <button type="button" class="btn-primary new-btn" (click)="vm.openCreate()">
+      <span class="label-full">+ Neue Adresse</span>
+      <span class="label-short">+</span>
+    </button>
+  </div>
+
+  <div class="list">
+    <div class="table-card">
+      <table>
+        <colgroup>
+          <col style="width: 18%" />
+          <col style="width: 16%" />
+          <col style="width: 14%" />
+          <col style="width: 12%" />
+          <col style="width: 10%" />
+          <col style="width: 14%" />
+          <col style="width: 16%" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th (click)="vm.sort('name')" class="sortable">
+              NAME <span class="sort-icon">{{ vm.sortIcons()['name'] }}</span>
+            </th>
+            <th (click)="vm.sort('street')" class="sortable">
+              STRASSE <span class="sort-icon">{{ vm.sortIcons()['street'] }}</span>
+            </th>
+            <th (click)="vm.sort('housenumber')" class="sortable">
+              HAUSNUMMER <span class="sort-icon">{{ vm.sortIcons()['housenumber'] }}</span>
+            </th>
+            <th>ZUSATZ</th>
+            <th (click)="vm.sort('zipcode')" class="sortable">
+              PLZ <span class="sort-icon">{{ vm.sortIcons()['zipcode'] }}</span>
+            </th>
+            <th (click)="vm.sort('city')" class="sortable">
+              STADT <span class="sort-icon">{{ vm.sortIcons()['city'] }}</span>
+            </th>
+            <th (click)="vm.sort('country')" class="sortable">
+              LAND <span class="sort-icon">{{ vm.sortIcons()['country'] }}</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (address of vm.addresses(); track address.id) {
+            <tr (click)="vm.openEdit(address)">
+              <td><strong>{{ address.name }}</strong></td>
+              <td>{{ address.street }}</td>
+              <td>{{ address.houseNumber }}</td>
+              <td class="muted">{{ address.supplement ?? '–' }}</td>
+              <td>{{ address.zipCode }}</td>
+              <td>{{ address.cityName }}</td>
+              <td>{{ address.countryName }}</td>
+            </tr>
+          } @empty {
+            <tr><td colspan="7" class="empty">Keine Adressen gefunden.</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="cards">
+      @for (address of vm.addresses(); track address.id) {
+        <div class="address-card" tabindex="0" role="button"
+             (click)="vm.openEdit(address)"
+             (keydown.enter)="vm.openEdit(address)">
+          <div class="title">{{ address.name }}</div>
+          <div class="sub">
+            {{ address.street }} {{ address.houseNumber }}{{ address.supplement ? ', ' + address.supplement : '' }} –
+            {{ address.zipCode }} {{ address.cityName }}, {{ address.countryName }}
+          </div>
+          <svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 6l6 6-6 6" />
+          </svg>
+        </div>
+      } @empty {
+        <p class="empty-text">Keine Adressen gefunden.</p>
+      }
+    </div>
+
+    <div class="pagination">
+      <span>Seite {{ vm.currentPage() }} von {{ vm.totalPages() }}</span>
+      <button type="button" class="btn-outline"
+        [disabled]="vm.currentPage() <= 1"
+        (click)="vm.prevPage()">Zurück</button>
+      <button type="button" class="btn-primary"
+        [disabled]="vm.currentPage() >= vm.totalPages()"
+        (click)="vm.nextPage()">Vor</button>
+    </div>
+  </div>
+</div>
+
+@if (vm.modalOpen()) {
+  <app-address-modal
+    [address]="vm.selectedAddress()"
+    [cities]="vm.cities()"
+    [streets]="vm.streetSuggestions()"
+    [serverErrors]="vm.modalServerErrors()"
+    (save)="vm.save($event)"
+    (delete)="vm.delete($event)"
+    (cancel)="vm.closeModal()" />
+}

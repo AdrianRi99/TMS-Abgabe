@@ -1,16 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { API_URL } from '../api-config';
-
-
-export interface CityDto {
-  id: number;
-  name: string;
-  zipCode: string;
-  countryId: number;
-  countryName: string;
-}
+import { API_URL } from '../../../core/api-config';
+import { CityDto } from './city.models';
 
 @Injectable({ providedIn: 'root' })
 export class CityService {

@@ -1,0 +1,79 @@
+<div class="page">
+  <div class="card">
+    <h1>TMS</h1>
+
+    <form novalidate (submit)="onSubmit($event)">
+      <div class="field">
+        <label for="email">E-Mail</label>
+        <input
+          id="email"
+          type="email"
+          autocomplete="email"
+          placeholder="name@firma.de"
+          [value]="email()"
+          [class.invalid]="submitted() && !emailValid()"
+          (input)="email.set(getValue($event))" />
+        @if (submitted() && !emailValid()) {
+          <span class="error-msg">Bitte eine gültige E-Mail-Adresse eingeben</span>
+        }
+      </div>
+
+      <div class="field">
+        <label for="password">Passwort</label>
+        <input
+          id="password"
+          type="password"
+          [attr.autocomplete]="isLogin() ? 'current-password' : 'new-password'"
+          [placeholder]="isLogin() ? '••••••••' : 'Mindestens 8 Zeichen'"
+          [value]="password()"
+          [class.invalid]="submitted() && !passwordValid()"
+          (input)="password.set(getValue($event))" />
+        @if (submitted() && !passwordValid()) {
+          <span class="error-msg">
+            {{ isLogin() ? 'Pflichtfeld' : 'Mindestens 8 Zeichen' }}
+          </span>
+        }
+      </div>
+
+      @if (!isLogin()) {
+        <div class="field">
+          <label for="confirm">Passwort bestätigen</label>
+          <input
+            id="confirm"
+            type="password"
+            autocomplete="new-password"
+            placeholder="••••••••"
+            [value]="confirm()"
+            [class.invalid]="submitted() && !confirmValid()"
+            (input)="confirm.set(getValue($event))" />
+          @if (submitted() && !confirmValid()) {
+            <span class="error-msg">Passwörter stimmen nicht überein</span>
+          }
+        </div>
+      }
+
+      @if (serverError()) {
+        <p class="server-error" role="alert">{{ serverError() }}</p>
+      }
+
+      <button type="submit" class="btn-primary submit" [disabled]="loading()">
+        {{ isLogin() ? 'Anmelden' : 'Registrieren' }}
+      </button>
+    </form>
+
+    <div class="divider">
+      <span>oder</span>
+    </div>
+
+    <button type="button" class="btn-demo" [disabled]="loading()" (click)="loginAsDemo()">
+      Demo-Zugang nutzen
+    </button>
+
+    <p class="switch">
+      {{ isLogin() ? 'Noch kein Konto?' : 'Bereits registriert?' }}
+      <button type="button" class="link" (click)="toggleMode()">
+        {{ isLogin() ? 'Registrieren' : 'Anmelden' }}
+      </button>
+    </p>
+  </div>
+</div>

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using TMS.Identity.Application.DTOs;
 using TMS.Identity.Application.Interfaces;
 
-namespace TMS.Api.Controllers;
+namespace TMS.Api.Controllers.Identity;
 
 [ApiController]
 [AllowAnonymous]

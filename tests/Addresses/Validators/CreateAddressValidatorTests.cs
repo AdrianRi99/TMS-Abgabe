@@ -9,10 +9,11 @@ public class CreateAddressValidatorTests
     private readonly CreateAddressValidator _validator = new();
 
     private static CreateAddressRequest ValidRequest() =>
-        new("Hauptstraße", "12", null, "Wien", "1010", "Österreich");
+        new("Max Mustermann", "Hauptstraße", "12", null, "Wien", "1010", "Österreich");
 
     public static TheoryData<CreateAddressRequest, string> InvalidRequests => new()
     {
+        { ValidRequest() with { Name = "  " }, nameof(CreateAddressRequest.Name) },
         { ValidRequest() with { Street = "  " }, nameof(CreateAddressRequest.Street) },
         { ValidRequest() with { HouseNumber = "" }, nameof(CreateAddressRequest.HouseNumber) },
         { ValidRequest() with { Supplement = new string('x', 101) }, nameof(CreateAddressRequest.Supplement) },

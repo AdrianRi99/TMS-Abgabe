@@ -1,0 +1,127 @@
+<div class="overlay" (click)="onOverlayClick($event)">
+  <div class="modal">
+    <h3>{{ address() ? 'Adresse bearbeiten' : 'Neue Adresse' }}</h3>
+
+    <div class="form-grid">
+      <div class="form-field full">
+        <label>Name / Firma</label>
+        <input
+          [value]="name()"
+          placeholder="z. B. Max Mustermann oder Musterfirma GmbH"
+          [class.invalid]="!!fieldErrors().nameErr"
+          (input)="name.set(getValue($event))" />
+        @if (fieldErrors().nameErr) {
+          <span class="error-msg">{{ fieldErrors().nameErr }}</span>
+        }
+        @if (serverErrors()['Name']?.[0]) {
+          <span class="error-msg">{{ serverErrors()['Name'][0] }}</span>
+        }
+      </div>
+
+      <div class="form-field">
+        <label>Straße</label>
+        <app-autocomplete
+          [value]="street()"
+          [suggestions]="streets()"
+          placeholder="z. B. Musterstraße"
+          [invalid]="!!fieldErrors().streetErr"
+          (valueChange)="street.set($event)" />
+        @if (fieldErrors().streetErr) {
+          <span class="error-msg">{{ fieldErrors().streetErr }}</span>
+        }
+        @if (serverErrors()['Street']?.[0]) {
+          <span class="error-msg">{{ serverErrors()['Street'][0] }}</span>
+        }
+      </div>
+
+      <div class="form-field">
+        <label>Hausnummer</label>
+        <input
+          [value]="houseNumber()"
+          placeholder="12a"
+          [class.invalid]="!!fieldErrors().houseNumberErr"
+          (input)="houseNumber.set(getValue($event))" />
+        @if (fieldErrors().houseNumberErr) {
+          <span class="error-msg">{{ fieldErrors().houseNumberErr }}</span>
+        }
+        @if (serverErrors()['HouseNumber']?.[0]) {
+          <span class="error-msg">{{ serverErrors()['HouseNumber'][0] }}</span>
+        }
+      </div>
+
+      <div class="form-field full">
+        <label>Zusatz <span class="optional">(optional)</span></label>
+        <input
+          [value]="supplement()"
+          placeholder="z. B. 2. OG, Hinterhaus"
+          [class.invalid]="!!fieldErrors().supplementErr"
+          (input)="supplement.set(getValue($event))" />
+        @if (fieldErrors().supplementErr) {
+          <span class="error-msg">{{ fieldErrors().supplementErr }}</span>
+        }
+      </div>
+
+      <div class="form-field">
+        <label>Stadt</label>
+        <app-autocomplete
+          [value]="cityName()"
+          [suggestions]="citySuggestions()"
+          placeholder="z. B. Berlin"
+          [invalid]="!!fieldErrors().cityErr"
+          (valueChange)="onCitySelect($event)" />
+        @if (fieldErrors().cityErr) {
+          <span class="error-msg">{{ fieldErrors().cityErr }}</span>
+        }
+        @if (serverErrors()['CityName']?.[0]) {
+          <span class="error-msg">{{ serverErrors()['CityName'][0] }}</span>
+        }
+      </div>
+
+      <div class="form-field">
+        <label>PLZ</label>
+        <app-autocomplete
+          [value]="zipCode()"
+          [suggestions]="zipSuggestions()"
+          placeholder="10115"
+          [invalid]="!!fieldErrors().zipErr"
+          (valueChange)="zipCode.set($event)" />
+        @if (fieldErrors().zipErr) {
+          <span class="error-msg">{{ fieldErrors().zipErr }}</span>
+        }
+        @if (serverErrors()['ZipCode']?.[0]) {
+          <span class="error-msg">{{ serverErrors()['ZipCode'][0] }}</span>
+        }
+      </div>
+
+      <div class="form-field full">
+        <label>Land</label>
+        <app-autocomplete
+          [value]="countryName()"
+          [suggestions]="countrySuggestions()"
+          placeholder="z. B. Deutschland"
+          [invalid]="!!fieldErrors().countryErr"
+          (valueChange)="countryName.set($event)" />
+        @if (fieldErrors().countryErr) {
+          <span class="error-msg">{{ fieldErrors().countryErr }}</span>
+        }
+        @if (serverErrors()['CountryName']?.[0]) {
+          <span class="error-msg">{{ serverErrors()['CountryName'][0] }}</span>
+        }
+      </div>
+    </div>
+
+    @if (serverErrors()['general']?.[0]) {
+      <p class="server-error">{{ serverErrors()['general'][0] }}</p>
+    }
+
+    <div class="modal-actions">
+      @if (address()) {
+        <button type="button" class="btn-danger" (click)="onDelete()">Löschen</button>
+      }
+      <div class="right-actions">
+        <button type="button" class="btn-secondary" (click)="cancel.emit()">Abbrechen</button>
+        <button type="button" class="btn-primary" (click)="onSave()">Speichern</button>
+      </div>
+    </div>
+  </div>
+</div>

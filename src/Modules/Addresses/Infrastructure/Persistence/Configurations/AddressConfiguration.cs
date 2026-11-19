@@ -32,6 +32,7 @@ public class AddressConfiguration : IEntityTypeConfiguration<Address>
             .HasForeignKey(a => a.CityId)
             .OnDelete(DeleteBehavior.Restrict);
 
+        builder.HasIndex(a => a.Name);
         builder.HasIndex(a => a.Street);
         builder.HasIndex(a => a.CityId);
     }

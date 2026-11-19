@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using TMS.Addresses.Application.DTOs.CityDTO;
 using TMS.Addresses.Application.Handlers;
 
-namespace TMS.Api.Controllers;
+namespace TMS.Api.Controllers.Addresses;
 
 [ApiController]
 [Route("api/[controller]")]

@@ -4,7 +4,7 @@ using TMS.Addresses.Application.DTOs.AddressDTO;
 using TMS.Addresses.Application.Common;
 using TMS.Addresses.Application.Handlers;
 
-namespace TMS.Api.Controllers;
+namespace TMS.Api.Controllers.Addresses;
 
 [ApiController]
 [Route("api/[controller]")]
