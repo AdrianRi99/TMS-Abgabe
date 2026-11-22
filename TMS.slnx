@@ -25,4 +25,7 @@
   <Folder Name="/tests/Addresses/">
     <Project Path="tests/Addresses/TMS.Addresses.Tests.csproj" />
   </Folder>
+  <Folder Name="/winforms/">
+    <Project Path="winforms/TMS.WinForms.csproj" />
+  </Folder>
 </Solution>
