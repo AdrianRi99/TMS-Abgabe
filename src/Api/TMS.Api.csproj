@@ -20,6 +20,8 @@
   <ItemGroup>
     <ProjectReference Include="..\Modules\Addresses\Application\TMS.Addresses.Application.csproj" />
     <ProjectReference Include="..\Modules\Addresses\Infrastructure\TMS.Addresses.Infrastructure.csproj" />
+    <ProjectReference Include="..\Modules\Orders\Application\TMS.Orders.Application.csproj" />
+    <ProjectReference Include="..\Modules\Orders\Infrastructure\TMS.Orders.Infrastructure.csproj" />
     <ProjectReference Include="..\Modules\Identity\Application\TMS.Identity.Application.csproj" />
     <ProjectReference Include="..\Modules\Identity\Infrastructure\TMS.Identity.Infrastructure.csproj" />
   </ItemGroup>

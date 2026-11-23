@@ -23,6 +23,7 @@ public class AddressRepository : IAddressRepository
     }
 
     public async Task<(IReadOnlyList<Address> Items, int TotalCount)> SearchAsync(
+    string? name,
     string? street,
     string? cityName,
     string? countryName,
@@ -37,6 +38,9 @@ public class AddressRepository : IAddressRepository
             .Include(a => a.City)
             .ThenInclude(c => c.Country)
             .AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(name))
+            query = query.Where(a => EF.Functions.ILike(a.Name, $"%{name}%"));
 
         if (!string.IsNullOrWhiteSpace(street))
             query = query.Where(a => EF.Functions.ILike(a.Street, $"%{street}%"));

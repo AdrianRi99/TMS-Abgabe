@@ -14,6 +14,11 @@ using TMS.Identity.Infrastructure;
 using TMS.Identity.Infrastructure.Authentication;
 using TMS.Identity.Infrastructure.Persistence;
 using TMS.Api.OpenApi;
+using TMS.Api.Adapters;
+using TMS.Orders.Application;
+using TMS.Orders.Application.Interfaces;
+using TMS.Orders.Infrastructure;
+using TMS.Orders.Infrastructure.Persistence;
 using Scalar.AspNetCore;
 
 
@@ -32,6 +37,9 @@ builder.Services.AddOpenApi(options =>
 
 builder.Services.AddAddressesApplication();
 builder.Services.AddAddressesInfrastructure(builder.Configuration);
+builder.Services.AddOrdersApplication();
+builder.Services.AddOrdersInfrastructure(builder.Configuration);
+builder.Services.AddScoped<ICustomerLookup, AddressCustomerLookup>();
 builder.Services.AddIdentityApplication();
 builder.Services.AddIdentityInfrastructure(builder.Configuration);
 
@@ -113,6 +121,10 @@ using (var scope = app.Services.CreateScope())
     var addressesDb = scope.ServiceProvider
         .GetRequiredService<AddressesDbContext>();
     await addressesDb.Database.MigrateAsync();
+
+    var ordersDb = scope.ServiceProvider
+        .GetRequiredService<OrdersDbContext>();
+    await ordersDb.Database.MigrateAsync();
 
     var authDb = scope.ServiceProvider
         .GetRequiredService<AuthDbContext>();

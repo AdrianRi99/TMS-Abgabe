@@ -39,12 +39,12 @@ public class AddressHandlers
         AddressSearchRequest request, CancellationToken ct = default)
     {
         _logger.LogDebug(
-            "Searching addresses: street={Street} city={City} country={Country} page={Page} sortBy={SortBy} sortDirection={SortDirection}",
-            request.Street, request.CityName, request.CountryName,
+            "Searching addresses: name={Name} street={Street} city={City} country={Country} page={Page} sortBy={SortBy} sortDirection={SortDirection}",
+            request.Name, request.Street, request.CityName, request.CountryName,
             request.Page, request.SortBy, request.SortDirection);
 
         var (items, totalCount) = await _addresses.SearchAsync(
-            request.Street, request.CityName, request.CountryName,
+            request.Name, request.Street, request.CityName, request.CountryName,
             request.Page, request.PageSize,
             request.SortBy, request.SortDirection, ct);
 

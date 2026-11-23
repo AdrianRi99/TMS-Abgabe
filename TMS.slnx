@@ -21,9 +21,22 @@
   <Folder Name="/src/Modules/Identity/Infrastructure/">
     <Project Path="src/Modules/Identity/Infrastructure/TMS.Identity.Infrastructure.csproj" />
   </Folder>
+  <Folder Name="/src/Modules/Orders/" />
+  <Folder Name="/src/Modules/Orders/Application/">
+    <Project Path="src/Modules/Orders/Application/TMS.Orders.Application.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Orders/Domain/">
+    <Project Path="src/Modules/Orders/Domain/TMS.Orders.Domain.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Orders/Infrastructure/">
+    <Project Path="src/Modules/Orders/Infrastructure/TMS.Orders.Infrastructure.csproj" />
+  </Folder>
   <Folder Name="/tests/" />
   <Folder Name="/tests/Addresses/">
     <Project Path="tests/Addresses/TMS.Addresses.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Orders/">
+    <Project Path="tests/Orders/TMS.Orders.Tests.csproj" />
   </Folder>
   <Folder Name="/winforms/">
     <Project Path="winforms/TMS.WinForms.csproj" />

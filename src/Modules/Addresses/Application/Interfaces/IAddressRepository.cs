@@ -6,6 +6,7 @@ public interface IAddressRepository
 {
     Task<Address?> GetByIdAsync(Guid id, CancellationToken ct = default);
     Task<(IReadOnlyList<Address> Items, int TotalCount)> SearchAsync(
+        string? name,
         string? street,
         string? cityName,
         string? countryName,

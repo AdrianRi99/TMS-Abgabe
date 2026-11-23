@@ -19,4 +19,21 @@ public class AddressSearchRequestValidatorTests
 
         result.IsValid.Should().Be(expectedValid);
     }
+
+    [Theory]
+    [InlineData(null, true)]
+    [InlineData("Mustermann", true)]
+    [InlineData("", true)]
+    public void Validate_WithName_HasNoErrors(string? name, bool expectedValid)
+    {
+        _validator.Validate(new AddressSearchRequest(Name: name)).IsValid.Should().Be(expectedValid);
+    }
+
+    [Fact]
+    public void Validate_WithTooLongName_Fails()
+    {
+        var result = _validator.Validate(new AddressSearchRequest(Name: new string('x', 201)));
+
+        result.Errors.Should().Contain(e => e.PropertyName == nameof(AddressSearchRequest.Name));
+    }
 }

@@ -14,6 +14,7 @@ Backend: .NET 10 / ASP.NET Core Web API · Datenbank: PostgreSQL · Frontend: An
 - Validierung im Frontend (feldspezifisch) und im Backend (FluentValidation)
 - Login und Registrierung (JWT), Demo-Zugang per Button
 - Responsives Layout: Tabelle auf Desktop, Karten-Ansicht auf Mobile (< 768 px)
+- Bestellungen (Orders-Modul, aktuell nur Backend-API): Bestellungen mit Positionen anlegen, ändern, löschen und seitenweise abrufen
 
 ## Screenshots
 
@@ -84,7 +85,7 @@ in mehreren Sprachen. Das zugrundeliegende OpenAPI 3.0-Schema ist direkt abrufba
 dotnet test
 ```
 
-Enthalten sind Validator-Tests und Handler-Tests (Repositories gemockt mit NSubstitute).
+Enthalten sind Validator-Tests und Handler-Tests für Addresses und Orders (Repositories gemockt mit NSubstitute).
 
 ## Konfiguration
 
@@ -99,7 +100,7 @@ In Produktion muss er per Umgebungsvariable oder Secret-Store gesetzt werden.
 
 ## Migrationen
 
-Zwei DbContexts (`AddressesDbContext`, `AuthDbContext`), daher immer mit `--context`:
+Drei DbContexts (`AddressesDbContext`, `AuthDbContext`, `OrdersDbContext`), daher immer mit `--context`:
 
 ```powershell
 dotnet tool run dotnet-ef -- migrations add <Name> `
@@ -110,6 +111,7 @@ dotnet tool run dotnet-ef -- migrations add <Name> `
 ```
 
 Für Identity: `--context AuthDbContext` und das Projekt `src\Modules\Identity\Infrastructure\TMS.Identity.Infrastructure.csproj`.  
+Für Orders: `--context OrdersDbContext` und das Projekt `src\Modules\Orders\Infrastructure\TMS.Orders.Infrastructure.csproj`.  
 `dotnet-ef` ist als lokales Tool in `.config/dotnet-tools.json` hinterlegt – einmalig `dotnet tool restore`.
 
 ## API-Client
@@ -140,10 +142,15 @@ src/
     │   ├── Domain/                        Entities (Address, City, Country)
     │   ├── Application/                   Handler, DTOs, Validatoren, Repository-Interfaces
     │   └── Infrastructure/                EF Core, Konfigurationen, Repositories, Migrationen
-    └── Identity/
-        ├── Application/                   Auth-Service-Interface, DTOs, Validatoren
-        └── Infrastructure/                ASP.NET Core Identity, JWT
+    ├── Identity/
+    │   ├── Application/                   Auth-Service-Interface, DTOs, Validatoren
+    │   └── Infrastructure/                ASP.NET Core Identity, JWT
+    └── Orders/
+        ├── Domain/                        Entities (Order, OrderItem), OrderStatus
+        ├── Application/                   Handler, DTOs, Validatoren, Repository- und Lookup-Interface
+        └── Infrastructure/                EF Core (Schema `orders`), Repository, Migrationen
 tests/Addresses/                           xUnit
+tests/Orders/                              xUnit
 tms-frontend/                              Angular
 ```
 
@@ -161,6 +168,27 @@ Normalisiert: Orts- und Länderdaten liegen einmalig in eigenen Tabellen. Beim S
 einer Adresse werden Stadt und Land anhand der Eingabe gesucht oder angelegt
 (Unique-Indizes verhindern Duplikate).
 
+### Orders-Modul
+
+```
+Order (Id, AddressId, CustomerName, OrderDate, Status)  1 ── n  OrderItem (Id, OrderId, Description, Price, Quantity)
+```
+
+- `AddressId` verweist auf eine Adresse, hat aber **keinen Fremdschlüssel** (Modulgrenze).
+- `CustomerName` ist ein Snapshot von `Address.Name` und wird beim Anlegen einmalig kopiert, danach nie nachgeladen.
+- `OrderDate` wird serverseitig auf UTC-Now gesetzt, `Status` ist `Offen`, `Abgeschlossen` oder `Storniert` (Standard `Offen`).
+- `TotalPrice` ist kein DB-Feld, sondern wird im DTO als `Sum(Price * Quantity)` berechnet.
+- `PUT` ändert nur Status und Positionen (Positionen werden komplett ersetzt); `AddressId`, `CustomerName` und `OrderDate` bleiben unverändert.
+- Eigener DbContext mit eigenem Schema `orders` (inkl. eigener Migrationshistorie).
+
+Endpoints: `GET /api/orders` (Paging, Sortierung nach `orderdate`, `customername`, `status`),
+`GET /api/orders/{id}`, `POST /api/orders`, `PUT /api/orders/{id}`, `DELETE /api/orders/{id}`.
+
+**Kundenname ohne Modulkopplung:** Orders definiert in der Application-Schicht ein eigenes Interface
+`ICustomerLookup`. Die Implementierung `AddressCustomerLookup` liegt im Host (`src/Api/Adapters`)
+und nutzt dort die Addresses-Handler. So kennt Orders das Addresses-Modul nicht, der Name wird
+trotzdem serverseitig ermittelt. Existiert die Adresse nicht, antwortet `POST` mit 400.
+
 ### Neues Modul ergänzen (z. B. Rechnungsverwaltung)
 
 1. Projekte `TMS.Invoices.Domain/Application/Infrastructure` anlegen, in die Solution aufnehmen.
@@ -169,6 +197,8 @@ einer Adresse werden Stadt und Land anhand der Eingabe gesucht oder angelegt
 4. Controller im Host ergänzen. Alle Controller sind standardmäßig durch JWT geschützt (`RequireAuthorization`).
 5. Module referenzieren sich nicht gegenseitig im Datenmodell: Verweise auf Adressen erfolgen
    nur über die `Guid`, ohne Fremdschlüssel über Modulgrenzen.
+6. Werden Daten eines anderen Moduls benötigt, definiert das konsumierende Modul ein eigenes
+   Interface (Port) und der Host liefert den Adapter, siehe `ICustomerLookup` im Orders-Modul.
 
 ## Technische Entscheidungen
 

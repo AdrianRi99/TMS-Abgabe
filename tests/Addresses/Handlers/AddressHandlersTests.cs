@@ -225,4 +225,17 @@ public class AddressHandlersTests
         await _addresses.Received(1)
             .DeleteAsync(address.Id, Arg.Any<CancellationToken>());
     }
+
+    [Fact]
+    public async Task SearchAsync_PassesNameFilterToRepository()
+    {
+        var address = CreateTestAddress(name: "Erika Muster");
+        _addresses.SearchAsync("Erika", null, null, null, 1, 20, "street", "asc", Arg.Any<CancellationToken>())
+            .Returns(((IReadOnlyList<Address>)[address], 1));
+
+        var result = await _handlers.SearchAsync(new AddressSearchRequest(Name: "Erika"));
+
+        result.Items.Should().ContainSingle().Which.Name.Should().Be("Erika Muster");
+        result.TotalCount.Should().Be(1);
+    }
 }
