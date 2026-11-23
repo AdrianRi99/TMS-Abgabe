@@ -110,6 +110,23 @@ public class OrderHandlersTests
     }
 
     [Fact]
+    public async Task CreateAsync_ReturnsItemsInEnteredOrder()
+    {
+        var addressId = Guid.NewGuid();
+        _customers.GetCustomerNameAsync(addressId, Arg.Any<CancellationToken>()).Returns("Erika Muster");
+        var request = new CreateOrderRequest(addressId,
+        [
+            new OrderItemRequest("Zebra", 1m, 1),
+            new OrderItemRequest("Apfel", 1m, 1),
+            new OrderItemRequest("Mango", 1m, 1)
+        ]);
+
+        var result = await _handlers.CreateAsync(request);
+
+        result!.Items.Select(i => i.Description).Should().Equal("Zebra", "Apfel", "Mango");
+    }
+
+    [Fact]
     public async Task CreateAsync_WhenAddressUnknown_ReturnsNullAndDoesNotPersist()
     {
         _customers.GetCustomerNameAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>()).Returns((string?)null);

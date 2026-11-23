@@ -1,0 +1,90 @@
+<div class="page">
+  <div class="page-header">
+    <h2>Bestellungen</h2>
+    <button type="button" class="btn-primary new-btn" (click)="vm.openCreate()">
+      <span class="label-full">+ Neue Bestellung</span>
+      <span class="label-short">+</span>
+    </button>
+  </div>
+
+  <div class="list">
+    <div class="table-card">
+      <table>
+        <colgroup>
+          <col style="width: 20%" />
+          <col style="width: 30%" />
+          <col style="width: 16%" />
+          <col style="width: 14%" />
+          <col style="width: 20%" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th (click)="vm.sort('orderdate')" class="sortable">
+              DATUM <span class="sort-icon">{{ vm.sortIcons()['orderdate'] }}</span>
+            </th>
+            <th (click)="vm.sort('customername')" class="sortable">
+              KUNDE <span class="sort-icon">{{ vm.sortIcons()['customername'] }}</span>
+            </th>
+            <th (click)="vm.sort('status')" class="sortable">
+              STATUS <span class="sort-icon">{{ vm.sortIcons()['status'] }}</span>
+            </th>
+            <th class="num">POSITIONEN</th>
+            <th class="num">GESAMTPREIS</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (order of vm.orders(); track order.id) {
+            <tr (click)="vm.openEdit(order)">
+              <td>{{ formatDate(order.orderDate) }}</td>
+              <td><strong>{{ order.customerName }}</strong></td>
+              <td><span [class]="'badge ' + statusClass(order.status)">{{ order.status }}</span></td>
+              <td class="num">{{ order.items.length }}</td>
+              <td class="num"><strong>{{ formatPrice(order.totalPrice) }}</strong></td>
+            </tr>
+          } @empty {
+            <tr><td colspan="5" class="empty">Keine Bestellungen gefunden.</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="cards">
+      @for (order of vm.orders(); track order.id) {
+        <div class="order-card" tabindex="0" role="button"
+             (click)="vm.openEdit(order)"
+             (keydown.enter)="vm.openEdit(order)">
+          <div class="card-head">
+            <span class="title">{{ order.customerName }}</span>
+            <span [class]="'badge ' + statusClass(order.status)">{{ order.status }}</span>
+          </div>
+          <div class="sub">
+            {{ formatDate(order.orderDate) }} · {{ order.items.length }}
+            {{ order.items.length === 1 ? 'Position' : 'Positionen' }}
+          </div>
+          <div class="total">{{ formatPrice(order.totalPrice) }}</div>
+        </div>
+      } @empty {
+        <p class="empty-text">Keine Bestellungen gefunden.</p>
+      }
+    </div>
+
+    <div class="pagination">
+      <span>Seite {{ vm.currentPage() }} von {{ vm.totalPages() }}</span>
+      <button type="button" class="btn-outline"
+        [disabled]="vm.currentPage() <= 1"
+        (click)="vm.prevPage()">Zurück</button>
+      <button type="button" class="btn-primary"
+        [disabled]="vm.currentPage() >= vm.totalPages()"
+        (click)="vm.nextPage()">Vor</button>
+    </div>
+  </div>
+</div>
+
+@if (vm.modalOpen()) {
+  <app-order-modal
+    [order]="vm.selectedOrder()"
+    [serverErrors]="vm.modalServerErrors()"
+    (save)="vm.save($event)"
+    (delete)="vm.delete($event)"
+    (cancel)="vm.closeModal()" />
+}

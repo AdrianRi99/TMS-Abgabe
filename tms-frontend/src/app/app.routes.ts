@@ -19,6 +19,12 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/addresses/addresses-page.component')
             .then(m => m.AddressesPageComponent)
+      },
+      {
+        path: 'orders',
+        loadComponent: () =>
+          import('./features/orders/orders-page.component')
+            .then(m => m.OrdersPageComponent)
       }
     ]
   },

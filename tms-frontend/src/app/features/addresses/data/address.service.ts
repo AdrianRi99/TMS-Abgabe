@@ -15,6 +15,7 @@ export class AddressService {
 
   search(params: AddressSearchParams): Observable<PagedResult<AddressDto>> {
     let httpParams = new HttpParams();
+    if (params.name) httpParams = httpParams.set('name', params.name);
     if (params.street) httpParams = httpParams.set('street', params.street);
     if (params.cityName) httpParams = httpParams.set('cityName', params.cityName);
     if (params.countryName) httpParams = httpParams.set('countryName', params.countryName);

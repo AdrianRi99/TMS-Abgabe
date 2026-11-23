@@ -1,0 +1,136 @@
+<div class="overlay" (click)="onOverlayClick($event)">
+  <div class="modal">
+    <h3>{{ order() ? 'Bestellung bearbeiten' : 'Neue Bestellung' }}</h3>
+
+    <div class="form-field">
+      <label>Kunde</label>
+      @if (order(); as o) {
+        <div class="readonly">
+          <strong>{{ o.customerName }}</strong>
+          <span class="muted">· bestellt am {{ formatDate(o.orderDate) }}</span>
+        </div>
+      } @else {
+        <app-address-picker
+          [selected]="address()"
+          [invalid]="!!addressErr() || !!serverError('AddressId')"
+          (selectedChange)="address.set($event); addressErr.set(null)" />
+        @if (addressErr()) {
+          <span class="error-msg">{{ addressErr() }}</span>
+        }
+        @if (serverError('AddressId')) {
+          <span class="error-msg">{{ serverError('AddressId') }}</span>
+        }
+      }
+    </div>
+
+    @if (order()) {
+      <div class="form-field status-field">
+        <label>Status</label>
+        <select [value]="status()" (change)="onStatusChange($event)">
+          @for (s of statuses; track s) {
+            <option [value]="s" [selected]="s === status()">{{ s }}</option>
+          }
+        </select>
+        @if (serverError('Status')) {
+          <span class="error-msg">{{ serverError('Status') }}</span>
+        }
+      </div>
+    }
+
+    <div class="items">
+      <div class="items-head">
+        <label>Positionen</label>
+        <button type="button" class="btn-secondary add-btn" (click)="addRow()">+ Position</button>
+      </div>
+
+      @if (itemsErr()) {
+        <span class="error-msg">{{ itemsErr() }}</span>
+      }
+      @if (serverError('Items')) {
+        <span class="error-msg">{{ serverError('Items') }}</span>
+      }
+
+      @for (row of rows(); track row.key; let i = $index) {
+        <div class="item-row">
+          <div class="item-field desc">
+            <input
+              [value]="row.description"
+              placeholder="Beschreibung"
+              aria-label="Beschreibung"
+              [class.invalid]="!!errorsFor(row.key).description || !!itemServerError(i, 'Description')"
+              (input)="updateRow(row.key, { description: inputValue($event) })" />
+            @if (errorsFor(row.key).description) {
+              <span class="error-msg">{{ errorsFor(row.key).description }}</span>
+            }
+            @if (itemServerError(i, 'Description')) {
+              <span class="error-msg">{{ itemServerError(i, 'Description') }}</span>
+            }
+          </div>
+
+          <div class="item-field price">
+            <input
+              type="number" min="0" step="0.01"
+              [value]="row.price ?? ''"
+              placeholder="Preis (€)"
+              aria-label="Preis in Euro"
+              [class.invalid]="!!errorsFor(row.key).price || !!itemServerError(i, 'Price')"
+              (input)="updateRow(row.key, { price: numberValue($event) })" />
+            @if (errorsFor(row.key).price) {
+              <span class="error-msg">{{ errorsFor(row.key).price }}</span>
+            }
+            @if (itemServerError(i, 'Price')) {
+              <span class="error-msg">{{ itemServerError(i, 'Price') }}</span>
+            }
+          </div>
+
+          <div class="item-field qty">
+            <input
+              type="number" min="1" step="1"
+              [value]="row.quantity ?? ''"
+              placeholder="Menge"
+              aria-label="Menge"
+              [class.invalid]="!!errorsFor(row.key).quantity || !!itemServerError(i, 'Quantity')"
+              (input)="updateRow(row.key, { quantity: numberValue($event) })" />
+            @if (errorsFor(row.key).quantity) {
+              <span class="error-msg">{{ errorsFor(row.key).quantity }}</span>
+            }
+            @if (itemServerError(i, 'Quantity')) {
+              <span class="error-msg">{{ itemServerError(i, 'Quantity') }}</span>
+            }
+          </div>
+
+          <button type="button" class="remove-btn" aria-label="Position entfernen"
+                  [disabled]="rows().length <= 1"
+                  (click)="removeRow(row.key)">×</button>
+        </div>
+      }
+
+      <div class="total">
+        <span>Gesamtpreis</span>
+        <strong>{{ formatPrice(total()) }}</strong>
+      </div>
+    </div>
+
+    @if (serverError('general')) {
+      <p class="server-error">{{ serverError('general') }}</p>
+    }
+
+    <div class="modal-actions">
+      @if (order()) {
+        @if (confirmingDelete()) {
+          <div class="confirm">
+            <span>Wirklich löschen?</span>
+            <button type="button" class="btn-danger" (click)="onDelete()">Ja, löschen</button>
+            <button type="button" class="btn-secondary" (click)="confirmingDelete.set(false)">Nein</button>
+          </div>
+        } @else {
+          <button type="button" class="btn-danger" (click)="onDelete()">Löschen</button>
+        }
+      }
+      <div class="right-actions">
+        <button type="button" class="btn-secondary" (click)="cancel.emit()">Abbrechen</button>
+        <button type="button" class="btn-primary" (click)="onSave()">Speichern</button>
+      </div>
+    </div>
+  </div>
+</div>

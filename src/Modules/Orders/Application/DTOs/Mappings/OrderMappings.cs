@@ -9,7 +9,7 @@ public static class OrderMappings
 
     public static OrderDto ToDto(this Order o) =>
         new(o.Id, o.AddressId, o.CustomerName, o.OrderDate, o.Status,
-            o.Items.Select(i => i.ToDto()).ToList(),
+            o.Items.OrderBy(i => i.Position).ThenBy(i => i.Id).Select(i => i.ToDto()).ToList(),
             o.Items.Sum(i => i.Price * i.Quantity));
 
     public static OrderItem ToEntity(this OrderItemRequest r) =>

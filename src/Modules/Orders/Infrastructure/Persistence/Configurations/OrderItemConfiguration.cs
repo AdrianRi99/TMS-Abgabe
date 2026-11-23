@@ -19,6 +19,7 @@ public class OrderItemConfiguration : IEntityTypeConfiguration<OrderItem>
 
         builder.Property(i => i.Price).HasPrecision(18, 2);
         builder.Property(i => i.Quantity).IsRequired();
+        builder.Property(i => i.Position).IsRequired();
 
         builder.HasIndex(i => i.OrderId);
     }

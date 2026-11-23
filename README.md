@@ -14,7 +14,7 @@ Backend: .NET 10 / ASP.NET Core Web API · Datenbank: PostgreSQL · Frontend: An
 - Validierung im Frontend (feldspezifisch) und im Backend (FluentValidation)
 - Login und Registrierung (JWT), Demo-Zugang per Button
 - Responsives Layout: Tabelle auf Desktop, Karten-Ansicht auf Mobile (< 768 px)
-- Bestellungen (Orders-Modul, aktuell nur Backend-API): Bestellungen mit Positionen anlegen, ändern, löschen und seitenweise abrufen
+- Bestellungen (Orders-Modul): Liste mit Sortierung und Paging, Anlegen mit Adresssuche nach Namen und mehreren Positionen (Live-Summe), Status ändern, Löschen mit Rückfrage; Backend-API und Angular-Seite
 
 ## Screenshots
 

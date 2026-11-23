@@ -25,13 +25,23 @@ public class Order
         CustomerName = customerName;
         OrderDate = DateTime.UtcNow;
         Status = OrderStatus.Open;
-        _items.AddRange(items);
+        SetItems(items);
     }
 
     public void Update(string status, IEnumerable<OrderItem> items)
     {
         Status = status;
         _items.Clear();
-        _items.AddRange(items);
+        SetItems(items);
+    }
+
+    private void SetItems(IEnumerable<OrderItem> items)
+    {
+        var position = 0;
+        foreach (var item in items)
+        {
+            item.SetPosition(position++);
+            _items.Add(item);
+        }
     }
 }

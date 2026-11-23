@@ -20,6 +20,7 @@ export interface PagedResult<T> {
 }
 
 export interface AddressSearchParams {
+  name?: string;
   street?: string;
   cityName?: string;
   countryName?: string;

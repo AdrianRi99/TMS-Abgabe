@@ -1,22 +1,55 @@
 import { Component, input, output } from '@angular/core';
+import { RouterLink, RouterLinkActive } from '@angular/router';
+
+interface NavItem {
+  label: string;
+  path: string;
+  /** SVG path data (one entry per <path>), 24x24 viewBox, stroke style. */
+  icon: string[];
+  /** Active only on an exact URL match (needed for the root path). */
+  exact?: boolean;
+}
+
+const NAV_ITEMS: NavItem[] = [
+  {
+    label: 'Adressverwaltung',
+    path: '/',
+    exact: true,
+    icon: ['M3 11.5 12 4l9 7.5', 'M5 10v10h14V10']
+  },
+  {
+    label: 'Bestellungen',
+    path: '/orders',
+    icon: [
+      'M9 4h6a1 1 0 0 1 1 1v1H8V5a1 1 0 0 1 1-1z',
+      'M8 6H6a1 1 0 0 0-1 1v13a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1h-2',
+      'M9 12h6M9 16h4'
+    ]
+  }
+];
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
+  imports: [RouterLink, RouterLinkActive],
   template: `
     @if (open()) {
       <div class="backdrop" (click)="closeRequested.emit()"></div>
       <aside class="sidebar">
         <div>
           <p class="nav-label">NAVIGATION</p>
-          <a class="nav-item active">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M3 11.5 12 4l9 7.5" />
-              <path d="M5 10v10h14V10" />
-            </svg>
-            Adressverwaltung
-          </a>
+          @for (item of navItems; track item.path) {
+            <a class="nav-item" [routerLink]="item.path" routerLinkActive="active"
+               [routerLinkActiveOptions]="{ exact: item.exact ?? false }">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                @for (d of item.icon; track d) {
+                  <path [attr.d]="d" />
+                }
+              </svg>
+              {{ item.label }}
+            </a>
+          }
         </div>
         <div class="sidebar-bottom">
           <button type="button" class="logout-btn" (click)="logout.emit()">
@@ -115,6 +148,8 @@ import { Component, input, output } from '@angular/core';
   `]
 })
 export class SidebarComponent {
+  readonly navItems = NAV_ITEMS;
+
   open = input(true);
   logout = output<void>();
   closeRequested = output<void>();
